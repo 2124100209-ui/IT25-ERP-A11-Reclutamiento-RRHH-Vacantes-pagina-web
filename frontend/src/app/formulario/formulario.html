@@ -1,0 +1,422 @@
+
+    <h1 class="form-title">Solicitud de Empleo</h1>
+
+    <form #miFormulario="ngForm" enctype="multipart/form-data">
+
+        <div class="form-errors" *ngIf="erroresFormulario.length > 0">
+            <h2>Revisa esta informacion</h2>
+            <ul>
+                <li *ngFor="let error of erroresFormulario">
+                    {{ error }}
+                </li>
+            </ul>
+        </div>
+
+        <!-- DATOS PERSONALES -->
+        <fieldset>
+            <legend>Datos Personales</legend>
+
+            <label>Nombre(s):</label><br>
+            <input type="text" placeholder="Ingrese su nombre" name="nombre" [(ngModel)]="nombre" required><br><br>
+            
+
+            <label>Apellidos:</label><br>
+            <input type="text" placeholder="Ingrese sus apellidos" name="apellidos" [(ngModel)]="apellido" required><br><br>
+
+
+            <label>Teléfono:</label><br>
+            <input type="tel" placeholder="Ingrese su número de teléfono" name="telefono" [(ngModel)]="telefono" required><br><br>
+
+            <label>Correo electrónico:</label><br>
+            <input type="email" placeholder="Ingrese su correo electrónico" name="correo" [(ngModel)]="email" required><br><br>
+
+            <label>CURP:</label><br>
+            <input type="text" placeholder="Ingrese su CURP" name="curp" [(ngModel)]="curp" required><br><br>
+
+            <label>Direccion:</label><br>
+            <input type="text" placeholder="Ingrese su dirección" name="direccion" [(ngModel)]="direccion" required><br><br>
+        
+            <label>Fecha de nacimiento y edad:</label><br>
+            <input type="text" placeholder="Ejemplo: 1990-01-01 36 años" name="fecha_nacimiento" [(ngModel)]="fecha_nacimiento" required><br><br>
+        
+            <label>Estado civil:</label><br>
+            <input type="text" placeholder="Ingrese su estado civil" name="estado_civil" [(ngModel)]="estado_civil" required><br><br>
+
+            <label>Cuenta con credito Infonavit:</label><br>
+            <input
+                type="checkbox"
+                [(ngModel)]="credito_infonavit"
+                name="credito_infonavit">
+            <br><br>
+
+            
+        </fieldset>
+
+        <br>
+
+        <!-- PUESTO SOLICITADO -->
+        <fieldset>
+            <legend>Puesto Solicitado</legend>
+
+            <label>Nombre del puesto:</label><br>
+            <input
+                type="text"
+                placeholder="Se llena automaticamente desde la vacante"
+                [(ngModel)]="puesto_aplicado"
+                name="puesto"
+                readonly
+                required><br><br>
+
+            <label>Área / Departamento:</label><br>
+            <input
+                type="text"
+                placeholder="Se llena automaticamente desde la vacante"
+                [(ngModel)]="area"
+                name="departamento"
+                readonly
+                required><br><br>
+
+            <label>Sueldo percibido:</label><br>
+            <input type="text" placeholder="Ingrese su sueldo percibido" [(ngModel)]="sueldo_percibido" name="sueldo_percibido"><br><br>
+        </fieldset>
+
+        <br>
+
+        <!-- EDUCACIÓN -->
+        <fieldset>
+    <legend>Educación</legend>
+
+    <label>Nivel de estudios:</label><br>
+    <input
+        type="text"
+        placeholder="Ingrese su nivel de estudios"
+        [(ngModel)]="nivel_educativo"
+        name="nivel_estudios"
+        required>
+    <br><br>
+
+    <label>Escuela:</label><br>
+    <input
+        type="text"
+        placeholder="Ingrese el nombre de su escuela"
+        [(ngModel)]="institucion"
+        name="escuela"
+        required>
+    <br><br>
+
+    <label>Carrera o especialidad:</label><br>
+    <input
+        type="text"
+        placeholder="Ingrese su carrera o especialidad"
+        [(ngModel)]="titulo_obtenido"
+        name="carrera"
+        required>
+    <br><br>
+
+    <label>Cursos y/o certificados:</label><br>
+
+    <div *ngFor="let curso of cursos; let i = index; trackBy: trackByIndex">
+
+        <input
+            type="text"
+            placeholder="Ingrese un curso o certificado"
+            [(ngModel)]="cursos[i]"
+            [name]="'curso' + i">
+
+        <button
+            class="option-remove"
+            type="button"
+            *ngIf="cursos.length > 1"
+            (click)="eliminarCurso(i)">
+            Eliminar
+        </button>
+
+        <br><br>
+
+    </div>
+
+    <button
+        class="option-add"
+        type="button"
+        (click)="agregarCurso()">
+        + Agregar curso
+    </button>
+
+        </fieldset>
+
+        <br>
+
+
+
+
+        <!-- EXPERIENCIA LABORAL -->
+        <fieldset>
+
+    <legend>Experiencia Laboral</legend>
+
+    <label>Años de experiencia:</label><br>
+    <input
+        type="text"
+        [(ngModel)]="tiempo_experiencia"
+        name="años_experiencia">
+    <br><br>
+
+    <div *ngFor="let exp of experiencias; let i = index">
+
+        <h3>Trabajo {{ i + 1 }}</h3>
+
+        <label>Empresa:</label><br>
+        <input
+            type="text"
+            [(ngModel)]="exp.empresa"
+            [name]="'empresa' + i">
+        <br><br>
+
+        <label>Puesto:</label><br>
+        <input
+            type="text"
+            [(ngModel)]="exp.puesto"
+            [name]="'puestoEmpresa' + i">
+        <br><br>
+
+        <label>Periodo:</label><br>
+        <input
+            type="text"
+            [(ngModel)]="exp.periodo"
+            [name]="'periodo' + i">
+        <br><br>
+
+        <label>Actividades realizadas:</label><br>
+        <textarea
+            [(ngModel)]="exp.responsabilidades"
+            [name]="'responsabilidades' + i">
+        </textarea>
+        <br><br>
+
+        <label>Motivo de salida:</label><br>
+        <textarea
+            [(ngModel)]="exp.motivo_salida"
+            [name]="'motivoSalida' + i">
+        </textarea>
+        <br><br>
+
+
+
+        <button
+            class="option-remove"
+            type="button"
+            *ngIf="experiencias.length > 1"
+            (click)="eliminarExperiencia(i)">
+            Eliminar trabajo
+        </button>
+
+        <hr>
+
+    </div>
+
+    <button
+        class="option-add"
+        type="button"
+        (click)="agregarExperiencia()">
+        + Agregar trabajo
+    </button>
+
+
+        <label>Trabaja actualmente:</label><br>
+    <input
+        type="checkbox"
+        [(ngModel)]="trabaja_actualmente"
+        name="trabaja_actualmente">
+    <br><br>
+
+            <label>Sueldo actual:</label><br>
+    <input
+        type="text"
+        [(ngModel)]="sueldo_actual"
+        name="sueldo_actual">
+    <br><br>
+
+</fieldset>
+
+ <br>
+
+        <!--  CV  -->
+    <fieldset>
+            <legend>Currículum Vitae</legend>
+
+            <label>Adjunta tu CV:</label><br>
+            <input
+                #cvInput
+                type="file"
+                accept=".pdf,.doc,.docx"
+                (change)="seleccionarArchivo($event, 'cv')"
+                name="cv"><br><br>
+
+            <label>Adjunta carta de recomendación:</label><br>
+            <input
+                #cartaInput
+                type="file"
+                accept=".pdf,.doc,.docx"
+                (change)="seleccionarArchivo($event, 'carta')"
+                name="carta"><br>
+        </fieldset>
+
+        <!-- HABILIDADES -->
+        <fieldset>
+
+    <legend>Habilidades</legend>
+
+    <!-- IDIOMAS -->
+    <label>Idiomas:</label><br>
+
+    <div *ngFor="let idioma of idiomas; let i = index; trackBy: trackByIndex">
+
+        <input
+            type="text"
+            [(ngModel)]="idiomas[i]"
+            [name]="'idioma' + i">
+
+        <button
+            class="option-remove"
+            type="button"
+            *ngIf="idiomas.length > 1"
+            (click)="eliminarIdioma(i)">
+            Eliminar
+        </button>
+
+        <br><br>
+
+    </div>
+
+    <button
+        class="option-add"
+        type="button"
+        (click)="agregarIdioma()">
+        + Agregar idioma
+    </button>
+
+    <br><br>
+
+
+    <!-- SOFTWARE -->
+    <label>Software:</label><br>
+
+    <div *ngFor="let item of software; let i = index; trackBy: trackByIndex">
+
+        <input
+            type="text"
+            [(ngModel)]="software[i]"
+            [name]="'software' + i">
+
+        <button
+            class="option-remove"
+            type="button"
+            *ngIf="software.length > 1"
+            (click)="eliminarSoftware(i)">
+            Eliminar
+        </button>
+
+        <br><br>
+
+    </div>
+
+    <button
+        class="option-add"
+        type="button"
+        (click)="agregarSoftware()">
+        + Agregar software
+    </button>
+
+    <br><br>
+
+
+    <!-- HABILIDADES TECNICAS -->
+    <label>Habilidades técnicas:</label><br>
+
+    <div *ngFor="let habilidad of habilidadesTecnicas; let i = index; trackBy: trackByIndex">
+
+        <input
+            type="text"
+            [(ngModel)]="habilidadesTecnicas[i]"
+            [name]="'habilidad' + i">
+
+        <button
+            class="option-remove"
+            type="button"
+            *ngIf="habilidadesTecnicas.length > 1"
+            (click)="eliminarHabilidadTecnica(i)">
+            Eliminar
+        </button>
+
+        <br><br>
+
+    </div>
+
+    <button
+        class="option-add"
+        type="button"
+        (click)="agregarHabilidadTecnica()">
+        + Agregar habilidad
+    </button>
+
+    <br><br>
+
+
+    <!-- HABILIDADES BLANDAS -->
+    <label>Habilidades blandas:</label><br>
+
+    <textarea
+  placeholder="Ej: Comunicación asertiva, liderazgo, resiliencia y trabajo en equipo..."
+  [(ngModel)]="habilidades_blandas"
+  name="habilidades_blandas"
+  required></textarea>
+
+    <br><br>
+
+</fieldset>
+
+        <br>
+
+        <!-- INFORMACIÓN ADICIONAL -->
+        <fieldset>
+            <legend>Información Adicional</legend>
+
+            <label>Disponibilidad de horario:</label><br>
+            <input type="text" placeholder="Ingrese su disponibilidad de horario" [(ngModel)]="disponibilidad_horario" name="disponibilidad_horario"><br><br>
+
+            <label>¿Cuenta con licencia de conducir?</label><br>
+            <input type="checkbox" [(ngModel)]="licencia_conducir" name="licencia"><br><br>
+
+            <label>¿Cuenta con vehículo propio?</label><br>
+            <input type="checkbox" [(ngModel)]="vehiculo_propio" name="vehiculo"><br><br>
+
+            <label>¿Cuenta con alguna discapacidad?</label><br>
+            <input type="checkbox" [(ngModel)]="discapacidad" name="discapacidad"><br><br>
+
+            <label>En caso de tener discapacidad, especifique el tipo:</label><br>
+            <input type="text" placeholder="Tipo de discapacidad" [(ngModel)]="tipo_de" name="tipo_discapacidad"><br><br>
+        
+            <label>Otras características o información relevante:</label><br>
+            <textarea type="text" placeholder="Otras características" [(ngModel)]="otras_caracteristicas" name="otras_caracteristicas"></textarea><br><br>
+
+        </fieldset>
+
+        <br>
+
+
+        <button
+    class="submit-button"
+    type="button"
+    (click)="guardarFormulario(miFormulario, cvInput.files, cartaInput.files)">
+
+    Guardar
+
+</button>
+
+
+    </form>
+
+    <script>
+    </script>
+
+    <!-- Se edita -->

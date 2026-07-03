@@ -1,0 +1,98 @@
+<div class="register-page">
+  <section class="register-box">
+    <h2>Crear cuenta</h2>
+
+    <form #registroForm="ngForm">
+      <label>
+        Nombre(s)
+        <input
+          type="text"
+          placeholder="Ingrese su nombre"
+          name="nombre"
+          [(ngModel)]="nombre"
+          required>
+      </label>
+
+      <label>
+        Apellidos
+        <input
+          type="text"
+          placeholder="Ingrese sus apellidos"
+          name="apellido"
+          [(ngModel)]="apellido"
+          required>
+      </label>
+
+      <label>
+        Correo electronico
+        <input
+          type="email"
+          placeholder="Ingrese su correo"
+          name="correo"
+          [(ngModel)]="correo"
+          required>
+      </label>
+
+      <label>
+        Contrasena
+        <input
+          type="password"
+          placeholder="Minimo 6 caracteres"
+          name="password"
+          [(ngModel)]="password"
+          required>
+      </label>
+
+      <label>
+        Telefono
+        <input
+          type="tel"
+          placeholder="Ingrese su telefono"
+          name="telefono"
+          [(ngModel)]="telefono"
+          required>
+      </label>
+
+      <label>
+        CURP
+        <input
+          type="text"
+          placeholder="Ingrese su CURP"
+          name="curp"
+          [(ngModel)]="curp"
+          required>
+      </label>
+
+      <label class="wide-field">
+        Direccion
+        <input
+          type="text"
+          placeholder="Ingrese su direccion"
+          name="direccion"
+          [(ngModel)]="direccion"
+          required>
+      </label>
+
+      <label class="wide-field">
+        Fecha de nacimiento y edad
+        <input
+          type="text"
+          placeholder="Ejemplo: 1990-01-01 36 anos"
+          name="fecha_nacimiento"
+          [(ngModel)]="fecha_nacimiento"
+          required>
+      </label>
+
+      <p class="error" *ngIf="error">{{ error }}</p>
+
+      <button
+        type="button"
+        [disabled]="registroForm.invalid"
+        (click)="crearCuenta()">
+        Crear cuenta
+      </button>
+    </form>
+
+    <a routerLink="/admin-login">Ya tengo cuenta</a>
+  </section>
+</div>

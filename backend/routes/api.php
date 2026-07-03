@@ -186,3 +186,7 @@ Route::post(
     '/usuario',
     [UsuarioController::class, 'store']
 );
+Route::post(
+    '/usuario-login',
+    [UsuarioController::class, 'login']
+);

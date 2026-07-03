@@ -1,0 +1,256 @@
+<div class="container">
+
+<h2>Seguimiento primer filtro - RRHH</h2>
+
+<div class="table">
+    <table>
+  <thead class="table_top">
+    <tr>
+        <th class="b">Nombre</th>
+        <th class="b">Puesto solicitado</th>
+        <th class="b">Informacion</th>
+        <th class="b">Contacto</th>
+        <th class="b">CV</th>
+        <th class="b">Carta de recomendacion</th>
+        <th class="b">Aceptar</th>
+        <th class="b">Baja</th>
+    </tr>
+  </thead>
+  <tbody>
+
+  <tr *ngFor="let participante of informacion">
+
+    <td class="d">{{ participante.nombre }}</td>
+
+    <td class="d">{{ participante.puesto_aplicado }}</td>
+
+    <td class="d">
+      <button
+        class="btn-b"
+        (click)="abrirModal(participante)">
+        Informacion
+      </button>
+    </td>
+
+    <td class="d">
+      <button
+        class="btn-a"
+        (click)="abrirContacto(participante)">
+        Contacto
+      </button>
+    </td>
+
+    <td class="d">
+      <button
+        class="btn-b"
+        [disabled]="!participante.cv_path"
+        (click)="descargarDocumento(participante, 'cv')">
+        {{ participante.cv_original_name || 'Sin CV' }}
+      </button>
+    </td>
+
+    <td class="a">
+      <button
+        class="btn-a"
+        [disabled]="!participante.carta_path"
+        (click)="descargarDocumento(participante, 'carta')">
+        {{ participante.carta_original_name || 'Sin carta' }}
+      </button>
+    </td>
+
+    <td class="d">
+      <button
+        class="btn-b"
+        (click)="cambiarEstado(participante.id, 'aceptado')">
+        Aprobar
+      </button>
+    </td>
+
+    <td class="d">
+      <button class="btn-b" (click)="eliminarParticipante(participante.id)">
+        Baja
+      </button>
+    </td>
+
+  </tr>
+
+</tbody>
+</table>
+</div>
+
+<h2>Historial de bajas</h2>
+
+<div class="table">
+    <table>
+  <thead class="table_top">
+    <tr>
+        <th class="b">Nombre</th>
+        <th class="b">Puesto</th>
+        <th class="b">Contacto</th>
+    </tr>
+  </thead>
+  <tbody>
+
+  <tr *ngFor="let baja of historialBajas">
+
+    <td class="d">{{ baja.nombre }}</td>
+
+    <td class="d">{{ baja.puesto_aplicado || 'Sin puesto' }}</td>
+
+    <td class="d">
+      <button
+        class="btn-b"
+        type="button"
+        (click)="abrirHistorial(baja)">
+        Contacto
+      </button>
+    </td>
+
+  </tr>
+
+  <tr *ngIf="historialBajas.length === 0">
+    <td class="d" colspan="3">
+      No hay postulantes eliminados recientemente.
+    </td>
+  </tr>
+
+</tbody>
+</table>
+</div>
+
+<div class="overlay" *ngIf="mostrarHistorial">
+
+  <div class="modal-box">
+
+    <h2>
+      Contacto de {{ bajaSeleccionada?.nombre }}
+    </h2>
+
+    <ul>
+        <li>(Contacto)</li>
+        <li>Nombre: {{ bajaSeleccionada?.nombre }}</li>
+        <li>Puesto: {{ bajaSeleccionada?.puesto_aplicado || 'Sin puesto' }}</li>
+        <li>Correo: {{ bajaSeleccionada?.email || 'Sin correo' }}</li>
+        <li>Telefono: {{ bajaSeleccionada?.telefono || 'Sin telefono' }}</li>
+        <li>Direccion: {{ bajaSeleccionada?.direccion || 'Sin direccion' }}</li>
+        <li>Eliminado: {{ bajaSeleccionada?.deleted_at }}</li>
+    </ul>
+
+    <button class="btn-a" (click)="cerrarHistorial()"> Cancelar </button>
+
+  </div>
+
+</div>
+
+<div class="overlay" *ngIf="mostrarModal">
+
+  <div class="modal-box">
+
+    <h2>
+      Datos de {{ participanteSeleccionado?.nombre }}
+    </h2>
+
+    <ul>
+        <li>(Informacion personal)</li>
+        <li>ID postulante: {{ participanteSeleccionado?.id }}</li>
+        <li>Nombre: {{ participanteSeleccionado?.nombre }}</li>
+        <li>Apellido: {{ participanteSeleccionado?.apellido }}</li>
+        <li>CURP: {{ participanteSeleccionado?.curp }}</li>
+        <li>Fecha de nacimiento: {{ participanteSeleccionado?.fecha_nacimiento }}</li>
+        <li>Estado civil: {{ participanteSeleccionado?.estado_civil }}</li>
+        <li>Credito Infonavit: {{ participanteSeleccionado?.credito_infonavit ? 'Si' : 'No' }}</li>
+        <li>Status: {{ participanteSeleccionado?.status }}</li>
+    </ul>
+
+    <ul>
+        <li>(Contacto)</li>
+        <li>Correo: {{ participanteSeleccionado?.email }}</li>
+        <li>Telefono: {{ participanteSeleccionado?.telefono }}</li>
+        <li>Direccion: {{ participanteSeleccionado?.direccion }}</li>
+    </ul>
+
+    <ul>
+        <li>(Puesto solicitado)</li>
+        <li>Puesto: {{ participanteSeleccionado?.puesto_aplicado }}</li>
+        <li>Area: {{ participanteSeleccionado?.area }}</li>
+        <li>Sueldo percibido: {{ participanteSeleccionado?.sueldo_percibido }}</li>
+    </ul>
+
+    <ul>
+        <li>(Informacion profesional)</li>
+        <li>Trabaja actualmente: {{ participanteSeleccionado?.trabaja_actualmente ? 'Si' : 'No' }}</li>
+        <li>Sueldo actual: {{ participanteSeleccionado?.sueldo_actual || 'No especificado' }}</li>
+        <li *ngIf="!participanteSeleccionado?.work_experiences?.length">
+          Sin experiencias laborales registradas.
+        </li>
+        <li *ngFor="let experiencia of participanteSeleccionado?.work_experiences; let i = index">
+          <strong>Trabajo {{ i + 1 }}</strong><br>
+          Experiencia: {{ experiencia.tiempo_experiencia }}<br>
+          Empresa: {{ experiencia.empresa }}<br>
+          Puesto: {{ experiencia.puesto }}<br>
+          Periodo: {{ experiencia.periodo }}<br>
+          Responsabilidades: {{ experiencia.responsabilidades }}<br>
+          Motivo de salida: {{ experiencia.motivo_salida }}
+        </li>
+    </ul>
+
+    <ul>
+        <li>(Informacion academica)</li>
+        <li>Nivel educativo: {{ participanteSeleccionado?.nivel_educativo }}</li>
+        <li>Institucion: {{ participanteSeleccionado?.institucion }}</li>
+        <li>Titulo obtenido: {{ participanteSeleccionado?.titulo_obtenido }}</li>
+        <li>Cursos: {{ participanteSeleccionado?.cursos }}</li>
+    </ul>
+
+    <ul>
+        <li>(Habilidades)</li>
+        <li>Idiomas: {{ participanteSeleccionado?.idiomas }}</li>
+        <li>Software: {{ participanteSeleccionado?.software }}</li>
+        <li>Habilidades tecnicas: {{ participanteSeleccionado?.habilidades_tecnicas }}</li>
+        <li>Habilidades blandas: {{ participanteSeleccionado?.habilidades_blandas }}</li>
+    </ul>
+
+    <h3>Informacion extra</h3>
+    <ul>
+        <li>(Extra)</li>
+        <li>Disponibilidad de horario: {{ participanteSeleccionado?.disponibilidad_horario }}</li>
+        <li>Licencia de conducir: {{ participanteSeleccionado?.licencia_conducir ? 'Si' : 'No' }}</li>
+        <li>Vehiculo propio: {{ participanteSeleccionado?.vehiculo_propio ? 'Si' : 'No' }}</li>
+        <li>Tiene discapacidad: {{ participanteSeleccionado?.discapacidad ? 'Si' : 'No' }}</li>
+        <li>Tipo de discapacidad: {{ participanteSeleccionado?.tipo_de }}</li>
+        <li>Otras caracteristicas: {{ participanteSeleccionado?.otras_caracteristicas }}</li>
+    </ul>
+
+    <ul>
+        <li>(Registro)</li>
+        <li>Creado: {{ participanteSeleccionado?.applicant_created_at }}</li>
+        <li>Actualizado: {{ participanteSeleccionado?.applicant_updated_at }}</li>
+    </ul>
+
+    <button class="btn-a" (click)="cerrarModal()"> Cancelar </button>
+
+  </div>
+
+</div>
+
+<div class="overlay" *ngIf="mostrarContacto">
+
+  <div class="modal-box">
+
+    <h2>Datos de {{ participanteSeleccionado?.nombre }}</h2>
+
+    <ul>
+        <li>(Contacto de {{ participanteSeleccionado?.nombre }})</li>
+        <li>Correo: {{ participanteSeleccionado?.email }}</li>
+        <li>Telefono: {{ participanteSeleccionado?.telefono }}</li>
+        <li>CURP: {{ participanteSeleccionado?.curp }}</li>
+        <li>Credito Infonavit: {{ participanteSeleccionado?.credito_infonavit ? 'Si' : 'No' }}</li>
+        <li>Direccion: {{ participanteSeleccionado?.direccion }}</li>
+    </ul>
+
+    <button class="btn-a" (click)="cerrarContacto()"> Cancelar </button>
+
+  </div>
+</div>
+
+</div>

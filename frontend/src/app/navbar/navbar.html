@@ -1,0 +1,34 @@
+<nav class="nav">
+
+<div class="navbar-brand">
+        <img class="logo" src="https://seati.idebmexico.com/Imagenes/Imagen2.png">
+        <h2>SEATI</h2>
+    </div>
+
+    <div class="navbar-links">
+
+        <a routerLink="/" class="a">
+            Vacantes
+        </a>
+        <a routerLink="/admin-login" class="a" *ngIf="!estaAutenticado()">
+            Inicio de sesion
+        </a>
+        <a routerLink="/vacantes" class="a" *ngIf="esAdmin()">
+            Genera vacantes
+        </a>
+        <a routerLink="/seguimiento" class="a" *ngIf="esAdmin()">
+            Seguimiento prefiltro
+        </a>
+        <a routerLink="/seguimiento-acept" class="a" *ngIf="esAdmin()">
+            Candidatos verificados
+        </a>
+        <a routerLink="/administrador" class="a" *ngIf="esAdmin()">
+            Administrador
+        </a>
+        <button class="a nav-button" type="button" *ngIf="estaAutenticado()" (click)="cerrarSesion()">
+            Cerrar sesion
+        </button>
+
+    </div>
+
+</nav>

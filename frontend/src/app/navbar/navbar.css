@@ -1,0 +1,42 @@
+.nav{
+    background-color: #0F2A44;
+    padding: 7px 27px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-family: Arial, sans-serif;
+    /*background: linear-gradient(90deg, rgb(0, 0, 0) 25%, rgba(0, 165, 187, 1) 90%);*/
+}
+
+.navbar-brand {
+    display: flex;
+    align-items: center;
+    color: white;
+    font-weight: bold;
+    font-size: 23px;
+    letter-spacing: 4px;
+}
+
+.logo{
+    height: 67px;
+    margin-right: 8px;
+}
+
+.navbar-links {
+    display: flex;
+    gap: 40px;
+    align-items: center;
+}
+
+.a{
+    color: white;
+    text-decoration: none;
+    font-size: 17px;
+}
+
+.nav-button {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-family: Arial, sans-serif;
+}

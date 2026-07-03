@@ -1,0 +1,300 @@
+/*.container{
+    width: 80%;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.table_input{
+    margin: 5%;
+    align-items: center;
+    align-content: center;
+    display: flex;
+    align-self: center;
+}
+.table_edit{
+    margin: 5%;
+    align-items: center;
+    align-content: center;
+    display: flex;
+    align-self: center;
+}
+.a{
+    color:#ffffff;
+    background-color: #FF6B00;
+}
+.b{
+    color: #ffffff;
+    background-color: #0F2A44;
+}
+
+.btn-submit {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #0F2A44;
+    border: none;
+    color: rgb(255, 255, 255);
+    text-decoration: none;
+    border-radius: 7px;
+    font-weight: bold;
+    margin: 10px;
+    transition: background-color 0.3s;
+    cursor: pointer;
+
+}
+
+.btn-edit {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #FF6B00;
+    border: none;
+    color: rgb(255, 255, 255);
+    text-decoration: none;
+    border-radius: 7px;
+    font-weight: bold;
+    margin: 10px;
+    transition: background-color 0.3s;
+    cursor: pointer;
+
+}
+.btn-delete {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #0F2A44;
+    border: none;
+    color: rgb(255, 255, 255);
+    text-decoration: none;
+    border-radius: 7px;
+    font-weight: bold;
+    margin: 10px;
+    transition: background-color 0.3s;
+    cursor: pointer;
+
+}
+
+.btn-submit:hover, .btn-delete:hover {
+    background: #0f2a44c9;
+    color: white;
+}
+.btn-edit:hover {
+    background: #ff6a00cb;
+    color: white;
+}*/
+
+/* Reutilizamos la base del contenedor anterior */
+.container {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+    background-color: #F3F5F6;
+}
+.container h2{
+    color: #333;
+    margin-bottom: 30px;
+}
+
+.container h3 {
+    color: #555;
+    margin-bottom: 20px;
+}
+
+/* Contenedores de tablas (Input y Edit) */
+.table_input, .table-edit {
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    padding: 20px;
+    margin-bottom: 30px;
+    overflow-x: auto;
+}
+
+/* Estilo de tablas */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 15px;
+}
+
+.table-top {
+    background-color: #0F2A44;
+    color: white;
+}
+
+th.a, th.b {
+    padding: 12px;
+    text-align: left;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+}
+
+td {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+/* Estilo de los Inputs dentro de la tabla */
+input[type="text"] {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box; /* Evita que el input se salga de la celda */
+    transition: border-color 0.3s;
+}
+
+input[type="text"]:focus {
+    outline: none;
+    border-color: #3498db;
+    box-shadow: 0 0 5px rgba(52, 152, 219, 0.2);
+}
+
+/* Botones de acción */
+.btn-submit, .btn-edit, .btn-delete, .btn-form {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: opacity 0.2s;
+}
+
+.btn-submit { background-color: #FF6B00; color: white; }
+.btn-edit { background-color: #FF6B00; color: white; margin-right: 10px; }
+.btn-delete { background-color: #0F2A44; color: white; }
+
+.btn-submit:hover, .btn-edit:hover, .btn-delete:hover {
+    opacity: 0.9;
+}
+
+/* --- ESTILOS DEL MODAL (OVERLAY) --- */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* Fondo oscurecido */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-box {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    width: 400px;
+    text-align: center;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+    animation: fadeIn 0.3s ease;
+}
+
+.modal-box h2 {
+    margin-top: 0;
+    color: #2c3e50;
+    font-size: 1.4rem;
+}
+
+.btn-form {
+    margin: 10px 5px 0;
+    background-color: #FF6B00;
+    color: #ffffff;
+}
+
+.btn-form:last-child {
+    background-color: #0F2A44;
+    color: white;
+}
+
+/* Animación simple para el modal */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-20px);
+    }
+}
+
+.vacancy-thumb {
+    width: 80px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 6px;
+}
+
+.vacancy-form {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(260px, 1fr));
+    gap: 18px;
+}
+
+.vacancy-form label {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    color: #2c3e50;
+    font-weight: 600;
+}
+
+.vacancy-form input[type="file"] {
+    padding: 8px 0;
+}
+
+.vacancy-form textarea {
+    width: 100%;
+    min-height: 120px;
+    resize: vertical;
+    padding: 10px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+    line-height: 1.45;
+}
+
+.vacancy-form textarea:focus {
+    outline: none;
+    border-color: #3498db;
+    box-shadow: 0 0 5px rgba(52, 152, 219, 0.2);
+}
+
+.wide-field {
+    grid-column: 1 / -1;
+}
+
+.requirements-box {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.requirements-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+}
+
+.requirements-header .btn-submit {
+    padding: 8px 14px;
+}
+
+.requirement-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 10px;
+    align-items: center;
+}
+
+.requirement-row .btn-delete {
+    padding: 8px 12px;
+}
+
+.form-action {
+    justify-self: start;
+}
+
+.requirements-preview {
+    margin: 0;
+    padding-left: 18px;
+}
+
+.requirements-preview li {
+    margin-bottom: 4px;
+}

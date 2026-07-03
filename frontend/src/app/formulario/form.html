@@ -1,0 +1,104 @@
+<h1>Información adicional</h1>
+
+<label>
+
+    <br><br>
+
+<input
+  type="text"
+  placeholder="Tipo de contrato deseado"
+  [(ngModel)]="contrato_deseado"
+>
+
+</label>
+
+<label>
+
+  Licencia:
+  <input
+    type="checkbox"
+    [(ngModel)]="licencia_conducir"
+  >
+
+</label>
+
+<br><br>
+
+<label>
+
+  Vehículo:
+  <input
+    type="checkbox"
+    [(ngModel)]="vehiculo_propio"
+  >
+
+</label>
+
+<br><br>
+
+<label>
+
+  Discapacidad:
+  <input
+    type="checkbox"
+    [(ngModel)]="discapacidad"
+  >
+
+</label>
+
+<br><br>
+
+<input
+  type="text"
+  placeholder="Tipo de discapacidad"
+  [(ngModel)]="tipo_de"
+>
+
+<br><br>
+
+<input
+  type="text"
+  placeholder="Otras características"
+  [(ngModel)]="otras_caracteristicas"
+>
+
+<br><br>
+
+<button (click)="guardarInformacion()">
+
+  Guardar
+
+</button>
+
+<hr>
+
+<div *ngFor="let info of informacion">
+
+  <p>
+    Licencia:
+    {{ info.licencia_conducir }}
+  </p>
+
+  <p>
+    Vehículo:
+    {{ info.vehiculo_propio }}
+  </p>
+
+  <p>
+    Discapacidad:
+    {{ info.discapacidad }}
+  </p>
+
+  <p>
+    Tipo:
+    {{ info.Tipo_de }}
+  </p>
+
+  <p>
+    Otras:
+    {{ info.otras_caracteristicas }}
+  </p>
+
+  <hr>
+
+</div>

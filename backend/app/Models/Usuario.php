@@ -9,12 +9,22 @@ class Usuario extends Model
     protected $table = 'usuarios';
 
     protected $fillable = [
-        'puesto',
-        'descripcion_breve',
-        'descripcion',
-        'horario',
-        'requisitos',
-        'salario',
-        'img',
+        'nombre',
+        'apellido',
+        'correo',
+        'telefono',
+        'curp',
+        'direccion',
+        'fecha_nacimiento',
+        'datos_formulario',
+        'password',
+    ];
+
+    protected $hidden = [
+        'password',
+    ];
+
+    protected $casts = [
+        'datos_formulario' => 'array',
     ];
 }

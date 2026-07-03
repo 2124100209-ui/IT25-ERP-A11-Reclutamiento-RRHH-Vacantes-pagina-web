@@ -18,11 +18,38 @@ class ApplicantsController extends Controller
     public function store(Request $request)
     {
         $request->validate([
+            'nombre' => 'required|string|max:255',
+            'apellido' => 'required|string|max:255',
+            'curp' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'telefono' => 'required|string|max:255',
+            'direccion' => 'required|string|max:255',
+            'fecha_nacimiento' => 'required|string|max:255',
+            'estado_civil' => 'required|string|max:255',
             'cv' => 'nullable|file|mimes:pdf,doc,docx|max:20480',
             'carta' => 'nullable|file|mimes:pdf,doc,docx|max:20480',
+        ], [
+            'email.email' => 'El correo electronico no tiene un formato valido.',
+            'cv.mimes' => 'El CV debe ser PDF, DOC o DOCX.',
+            'carta.mimes' => 'La carta debe ser PDF, DOC o DOCX.',
+            'cv.max' => 'El CV no debe pesar mas de 20 MB.',
+            'carta.max' => 'La carta no debe pesar mas de 20 MB.',
         ]);
 
-        $info = Applicants::create([
+        $coincidencias = Applicants::where('curp', $request->curp)
+            ->orWhere('email', $request->email)
+            ->orWhere('telefono', $request->telefono)
+            ->get();
+
+        if ($coincidencias->pluck('id')->unique()->count() > 1) {
+            return response()->json([
+                'message' => 'Los datos pertenecen a diferentes postulantes registrados. Revisa CURP, correo y telefono.',
+            ], 422);
+        }
+
+        $info = $coincidencias->first();
+
+        $datos = [
 
             'nombre' => $request->nombre,
             'apellido' => $request->apellido,
@@ -37,7 +64,13 @@ class ApplicantsController extends Controller
             // nuevo
             'status' => 'pendiente'
 
-        ]);
+        ];
+
+        if ($info) {
+            $info->update($datos);
+        } else {
+            $info = Applicants::create($datos);
+        }
 
         $documentos = array_merge(
             $this->guardarDocumento($request, $info->id, 'cv'),

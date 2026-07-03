@@ -1,0 +1,88 @@
+<div class="container">
+
+<div class="hero-section">
+
+        <h1 class="title"> Reclutamiento </h1>
+
+        <p class="subtitle">
+            Encuentra tu proximo desafio profesional con nosotros.
+            Explora nuestras vacantes y postulate hoy mismo para formar parte de nuestro equipo.
+        </p>
+
+    </div>
+
+    <main class="main-content">
+        
+        <section class="info-section">
+            <h2 class="info-title">Vacantes disponibles</h2>
+
+            <div class="card" *ngFor="let vacante of informacion">
+                <img
+                    class="card-img"
+                    [src]="vacante.img_url"
+                    [alt]="vacante.puesto">
+                <div class="card-info">
+                    <h3 class="job-name"> {{ vacante.puesto }} </h3>
+                    <p class="description"> {{ vacante.descripcion_breve }} </p>
+                    <button class="btn-form" (click)="abrirModal(vacante)">
+                    Mas info
+                </button>
+                </div>
+            </div>
+
+<div class="overlay" *ngIf="mostrarModal">
+
+  <div class="modal-box">
+
+    <h2>Postulate a {{ vacanteSeleccionada?.puesto }}</h2>
+
+    <div class="job-detail">
+      <h3>Descripcion</h3>
+      <p>{{ vacanteSeleccionada?.descripcion }}</p>
+    </div>
+
+    <div class="job-meta">
+      <div>
+        <span>Departamento</span>
+        <strong>{{ vacanteSeleccionada?.departamento || 'No especificado' }}</strong>
+      </div>
+      <div>
+        <span>Horario</span>
+        <strong>{{ vacanteSeleccionada?.horario }}</strong>
+      </div>
+      <div>
+        <span>Salario</span>
+        <strong>{{ vacanteSeleccionada?.salario }}</strong>
+      </div>
+    </div>
+
+    <div class="job-detail">
+      <h3>Requisitos</h3>
+      <ul class="requirements-list">
+        <li *ngFor="let requisito of separarRequisitos(vacanteSeleccionada?.requisitos)">
+          {{ requisito }}
+        </li>
+      </ul>
+    </div>
+
+    <button class="btn-none" (click)="cerrarModal()"> Cerrar </button>
+    <button
+      class="btn-form"
+      [routerLink]="['/form']"
+      [queryParams]="{ vacanteId: vacanteSeleccionada?.id }">
+      Postularse
+    </button>
+
+
+  </div>
+
+</div>
+            
+        </section>
+        
+
+    </main>
+
+
+
+</div>
