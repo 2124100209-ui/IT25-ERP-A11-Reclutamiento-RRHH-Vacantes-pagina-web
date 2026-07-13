@@ -80,7 +80,7 @@ export class Administrador {
   obtenerApplicants() {
 
     this.http.get<any[]>(
-      'http://127.0.0.1:8000/api/applicants'
+      'https://api-vacantes.i-deb.com.mx/api/applicants'
     ).subscribe(data => {
 
       console.log(data);
@@ -95,7 +95,7 @@ export class Administrador {
   obtenerJobApplications() {
 
     this.http.get<any[]>(
-      'http://127.0.0.1:8000/api/job-applications'
+      'https://api-vacantes.i-deb.com.mx/api/job-applications'
     ).subscribe(data => {
 
       this.jobApplications = data;
@@ -108,7 +108,7 @@ export class Administrador {
   obtenerEducations() {
 
     this.http.get<any[]>(
-      'http://127.0.0.1:8000/api/educations'
+      'https://api-vacantes.i-deb.com.mx/api/educations'
     ).subscribe(data => {
 
       this.educations = data;
@@ -121,7 +121,7 @@ export class Administrador {
   obtenerWorkExperiences() {
 
     this.http.get<any[]>(
-      'http://127.0.0.1:8000/api/work-experiences'
+      'https://api-vacantes.i-deb.com.mx/api/work-experiences'
     ).subscribe(data => {
 
       this.workExperiences = data;
@@ -134,7 +134,7 @@ export class Administrador {
   obtenerSkills() {
 
     this.http.get<any[]>(
-      'http://127.0.0.1:8000/api/skills'
+      'https://api-vacantes.i-deb.com.mx/api/skills'
     ).subscribe(data => {
 
       this.skills = data;
@@ -147,7 +147,7 @@ export class Administrador {
   obtenerAdditionalInformation() {
 
     this.http.get<any[]>(
-      'http://127.0.0.1:8000/api/additional-information'
+      'https://api-vacantes.i-deb.com.mx/api/additional-information'
     ).subscribe(data => {
 
       this.additionalInformation = data;
@@ -194,7 +194,7 @@ export class Administrador {
     if (!confirmar) return;
 
     this.http.delete(
-      `http://127.0.0.1:8000/api/seguimiento/${id}/definitivo`
+      `https://api-vacantes.i-deb.com.mx/api/seguimiento/${id}/definitivo`
     ).subscribe({
       next: () => {
         alert('Postulante eliminado definitivamente.');

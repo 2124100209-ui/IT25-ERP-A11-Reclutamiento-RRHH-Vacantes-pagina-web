@@ -6,7 +6,7 @@ import { HttpClient } from '@angular/common/http';
 })
 export class AdditionalInformationService {
 
-  api = 'http://127.0.0.1:8000/api/additional-information';
+  api = 'https://api-vacantes.i-deb.com.mx/api/additional-information';
 
   constructor(private http: HttpClient) {}
 

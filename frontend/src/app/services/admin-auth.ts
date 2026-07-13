@@ -8,7 +8,7 @@ import { tap } from 'rxjs';
 })
 export class AdminAuthService {
 
-  private readonly api = 'http://127.0.0.1:8000/api';
+  private readonly api = 'https://api-vacantes.i-deb.com.mx/api';
   private readonly storageKey = 'admin_session';
   private readonly tokenKey = 'admin_token';
 

@@ -10,7 +10,7 @@ from '@angular/core';
 export class SeguimientoService {
 
   api =
-    'http://127.0.0.1:8000/api/seguimiento';
+    'https://api-vacantes.i-deb.com.mx/api/seguimiento';
 
   constructor(
     private http: HttpClient
