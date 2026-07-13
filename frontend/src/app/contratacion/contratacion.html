@@ -3,7 +3,163 @@
   <h2>Contratacion</h2>
 
   <div class="form-shell">
-    <h3>Postulante {{ applicantId }}</h3>
+    <h3>Datos de contratacion</h3>
+
+    <form class="contract-form">
+      <section class="form-section">
+        <h4>Datos generales</h4>
+
+        <div class="form-grid">
+          <label>
+            ID
+            <input
+              type="text"
+              name="id"
+              [(ngModel)]="contratacion.id">
+          </label>
+
+          <label>
+            Nombre
+            <input
+              type="text"
+              name="nombre"
+              [(ngModel)]="contratacion.nombre">
+          </label>
+
+          <label>
+            Apellido paterno
+            <input
+              type="text"
+              name="apellidoPaterno"
+              [(ngModel)]="contratacion.apellidoPaterno">
+          </label>
+
+          <label>
+            Apellido materno
+            <input
+              type="text"
+              name="apellidoMaterno"
+              [(ngModel)]="contratacion.apellidoMaterno">
+          </label>
+        </div>
+      </section>
+
+      <section class="form-section">
+        <div class="section-header">
+          <h4>Datos de familiar</h4>
+
+          <button
+            type="button"
+            class="btn-a"
+            (click)="agregarFamiliar()">
+            Agregar familiar
+          </button>
+        </div>
+
+        <div
+          class="family-card"
+          *ngFor="let familiar of familiares; let i = index; trackBy: trackByIndex">
+          <div class="family-header">
+            <h5>Familiar {{ i + 1 }}</h5>
+
+            <button
+              type="button"
+              class="btn-light"
+              (click)="eliminarFamiliar(i)">
+              Eliminar
+            </button>
+          </div>
+
+          <div class="form-grid">
+            <label>
+              Nombre
+              <input
+                type="text"
+                [name]="'familiarNombre' + i"
+                [(ngModel)]="familiar.nombre">
+            </label>
+
+            <label>
+              Parentesco
+              <input
+                type="text"
+                [name]="'familiarParentesco' + i"
+                [(ngModel)]="familiar.parentesco">
+            </label>
+
+            <label>
+              Edad
+              <input
+                type="number"
+                [name]="'familiarEdad' + i"
+                [(ngModel)]="familiar.edad">
+            </label>
+
+            <label>
+              Ocupacion
+              <input
+                type="text"
+                [name]="'familiarOcupacion' + i"
+                [(ngModel)]="familiar.ocupacion">
+            </label>
+
+            <label>
+              Escolaridad
+              <input
+                type="text"
+                [name]="'familiarEscolaridad' + i"
+                [(ngModel)]="familiar.escolaridad">
+            </label>
+
+            <label>
+              Direccion
+              <input
+                type="text"
+                [name]="'familiarDireccion' + i"
+                [(ngModel)]="familiar.direccion">
+            </label>
+
+            <label>
+              Colonia
+              <input
+                type="text"
+                [name]="'familiarColonia' + i"
+                [(ngModel)]="familiar.colonia">
+            </label>
+
+            <label>
+              Municipio
+              <input
+                type="text"
+                [name]="'familiarMunicipio' + i"
+                [(ngModel)]="familiar.municipio">
+            </label>
+
+            <label>
+              Codigo postal
+              <input
+                type="text"
+                [name]="'familiarCodigoPostal' + i"
+                [(ngModel)]="familiar.codigoPostal">
+            </label>
+
+            <label>
+              Telefono
+              <input
+                type="tel"
+                [name]="'familiarTelefono' + i"
+                [(ngModel)]="familiar.telefono">
+            </label>
+          </div>
+        </div>
+      </section>
+
+      <button
+        type="button"
+        class="btn-submit">
+        Subir datos
+      </button>
+    </form>
   </div>
 
   <button

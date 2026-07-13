@@ -36,6 +36,16 @@ export class UserAccountService {
       );
   }
 
+  obtenerEstadoPostulacion(usuario: any) {
+    return this.http.post<any>(
+      `${this.api}/usuario/estado-postulacion`,
+      {
+        correo: usuario?.correo,
+        curp: usuario?.curp,
+      }
+    );
+  }
+
   obtenerUsuario() {
     if (typeof window === 'undefined') {
       return null;

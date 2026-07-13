@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Applicants;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 
 class ApplicantsController extends Controller
@@ -15,21 +16,31 @@ class ApplicantsController extends Controller
         );
     }
 
+    public function show($id)
+    {
+        return response()->json(
+            Applicants::findOrFail($id)
+        );
+    }
+
     public function store(Request $request)
     {
         $request->validate([
             'nombre' => 'required|string|max:255',
-            'apellido' => 'required|string|max:255',
+            'apellido_paterno' => 'required|string|max:255',
+            'apellido_materno' => 'required|string|max:255',
             'curp' => 'required|string|max:255',
             'email' => 'required|email|max:255',
             'telefono' => 'required|string|max:255',
             'direccion' => 'required|string|max:255',
             'fecha_nacimiento' => 'required|string|max:255',
             'estado_civil' => 'required|string|max:255',
-            'cv' => 'nullable|file|mimes:pdf,doc,docx|max:20480',
-            'carta' => 'nullable|file|mimes:pdf,doc,docx|max:20480',
+            'cv' => 'required|file|mimes:pdf,doc,docx|max:20480',
+            'carta' => 'required|file|mimes:pdf,doc,docx|max:20480',
         ], [
             'email.email' => 'El correo electronico no tiene un formato valido.',
+            'cv.required' => 'Debes adjuntar tu CV.',
+            'carta.required' => 'Debes adjuntar tu carta de recomendacion.',
             'cv.mimes' => 'El CV debe ser PDF, DOC o DOCX.',
             'carta.mimes' => 'La carta debe ser PDF, DOC o DOCX.',
             'cv.max' => 'El CV no debe pesar mas de 20 MB.',
@@ -49,10 +60,22 @@ class ApplicantsController extends Controller
 
         $info = $coincidencias->first();
 
+        if ($info && $this->yaSePostuloMismaVacante($request, $info->id)) {
+            return response()->json([
+                'message' => 'Este usuario ya se postulo a esta vacante.',
+            ], 422);
+        }
+
+        $apellido = trim(
+            $request->apellido_paterno . ' ' . $request->apellido_materno
+        );
+
         $datos = [
 
             'nombre' => $request->nombre,
-            'apellido' => $request->apellido,
+            'apellido' => $apellido,
+            'apellido_paterno' => $request->apellido_paterno,
+            'apellido_materno' => $request->apellido_materno,
             'curp' => $request->curp,
             'email' => $request->email,
             'telefono' => $request->telefono,
@@ -65,6 +88,14 @@ class ApplicantsController extends Controller
             'status' => 'pendiente'
 
         ];
+
+        if (Schema::hasColumn('applicants', 'apellido_paterno')) {
+            $datos['apellido_paterno'] = $request->apellido_paterno;
+        }
+
+        if (Schema::hasColumn('applicants', 'apellido_materno')) {
+            $datos['apellido_materno'] = $request->apellido_materno;
+        }
 
         if ($info) {
             $info->update($datos);
@@ -82,6 +113,34 @@ class ApplicantsController extends Controller
         }
 
         return response()->json($info);
+    }
+
+    private function yaSePostuloMismaVacante(
+        Request $request,
+        int $applicantId
+    ): bool {
+        $consulta = \App\Models\JobApplications::where(
+            'applicant_id',
+            $applicantId
+        );
+
+        if (
+            $request->vacancy_id
+            && Schema::hasColumn('job_applications', 'vacancy_id')
+        ) {
+            return $consulta
+                ->where('vacancy_id', $request->vacancy_id)
+                ->exists();
+        }
+
+        if ($request->puesto_aplicado && $request->area) {
+            return $consulta
+                ->where('puesto_aplicado', $request->puesto_aplicado)
+                ->where('area', $request->area)
+                ->exists();
+        }
+
+        return false;
     }
 
     private function guardarDocumento(

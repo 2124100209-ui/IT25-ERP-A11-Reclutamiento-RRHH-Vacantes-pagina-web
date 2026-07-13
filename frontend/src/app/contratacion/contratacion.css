@@ -21,7 +21,94 @@
 
 .form-shell h3 {
     color: #0F2A44;
+    margin: 0 0 22px;
+}
+
+.contract-form {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.form-section {
+    border-top: 1px solid #e4e7ea;
+    padding-top: 20px;
+}
+
+.form-section h4 {
+    color: #0F2A44;
+    margin: 0 0 16px;
+}
+
+.section-header,
+.family-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    margin-bottom: 16px;
+}
+
+.family-header h5 {
+    color: #0F2A44;
+    font-size: 1rem;
     margin: 0;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(220px, 1fr));
+    gap: 16px;
+}
+
+.form-grid label {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    color: #333;
+    font-weight: 700;
+}
+
+.form-grid input {
+    border: 1px solid #d7dce0;
+    border-radius: 5px;
+    padding: 10px 12px;
+    font-size: 1rem;
+}
+
+.family-card {
+    background: #F3F5F6;
+    border: 1px solid #d7dce0;
+    border-radius: 8px;
+    margin-bottom: 18px;
+    padding: 18px;
+}
+
+.btn-a,
+.btn-light,
+.btn-submit {
+    border: none;
+    border-radius: 7px;
+    cursor: pointer;
+    font-weight: bold;
+    padding: 10px 18px;
+}
+
+.btn-a,
+.btn-submit {
+    background-color: #FF6B00;
+    color: #ffffff;
+}
+
+.btn-light {
+    background: #ffffff;
+    border: 1px solid #0F2A44;
+    color: #0F2A44;
+}
+
+.btn-submit {
+    align-self: flex-start;
+    min-width: 180px;
 }
 
 .btn-b {
@@ -41,4 +128,16 @@
 .btn-b:hover {
     background: #0f2a44c9;
     color: white;
+}
+
+@media (max-width: 720px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .section-header,
+    .family-header {
+        align-items: stretch;
+        flex-direction: column;
+    }
 }

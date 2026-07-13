@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 
 import { UsuariosService } from '../services/usuarios';
+import { UserAccountService } from '../services/user-account';
 
 @Component({
   selector: 'app-usuario',
@@ -13,8 +14,12 @@ import { UsuariosService } from '../services/usuarios';
 })
 export class Usuario {
   private readonly changeDetector = inject(ChangeDetectorRef);
+  private readonly userAccountService =
+    inject(UserAccountService);
 
   mostrarModal = false;
+  mostrarNotificacionSegundoFiltro = false;
+  mensajeSegundoFiltro = '';
 
   vacanteSeleccionada: any = null;
 
@@ -47,6 +52,7 @@ export class Usuario {
   constructor(private UsuariosService: UsuariosService) {
     afterNextRender(() => {
       this.obtenerInformacion();
+      this.revisarSegundoFiltro();
     });
   }
 
@@ -69,6 +75,29 @@ export class Usuario {
       .split(/\r?\n|,/)
       .map((requisito) => requisito.trim())
       .filter((requisito) => requisito.length > 0);
+  }
+
+  revisarSegundoFiltro() {
+    const usuario = this.userAccountService.obtenerUsuario();
+
+    if (!usuario) return;
+
+    this.userAccountService
+      .obtenerEstadoPostulacion(usuario)
+      .subscribe({
+        next: (respuesta) => {
+          if (!respuesta?.segundo_filtro) return;
+
+          const puesto = respuesta.postulacion?.puesto_aplicado;
+
+          this.mensajeSegundoFiltro = puesto
+            ? `Tu postulacion para ${puesto} avanzo al segundo filtro.`
+            : 'Tu postulacion avanzo al segundo filtro.';
+
+          this.mostrarNotificacionSegundoFiltro = true;
+          this.changeDetector.detectChanges();
+        },
+      });
   }
 
 }

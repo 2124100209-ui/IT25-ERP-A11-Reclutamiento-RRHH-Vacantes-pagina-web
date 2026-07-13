@@ -40,6 +40,12 @@ export class SeguimientoService {
 
   }
 
+  eliminarDefinitivo(id: number) {
+    return this.http.delete(
+      `${this.api}/${id}/definitivo`
+    );
+  }
+
 
   cambiarEstado(
   id: number,

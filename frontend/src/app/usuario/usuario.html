@@ -14,6 +14,12 @@
     <main class="main-content">
         
         <section class="info-section">
+            <div
+                class="status-notification"
+                *ngIf="mostrarNotificacionSegundoFiltro">
+                {{ mensajeSegundoFiltro }}
+            </div>
+
             <h2 class="info-title">Vacantes disponibles</h2>
 
             <div class="card" *ngFor="let vacante of informacion">

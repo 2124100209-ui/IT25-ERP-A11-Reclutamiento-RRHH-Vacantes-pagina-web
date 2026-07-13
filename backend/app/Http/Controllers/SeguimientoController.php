@@ -218,9 +218,36 @@ public function destroy($id)
 {
     $this->guardarHistorialBaja($id);
 
+    DB::table('applicants')
+        ->where('id', $id)
+        ->update([
+            'status' => 'baja',
+            'updated_at' => now(),
+        ]);
+
+    return response()->json([
+        'mensaje' => 'Postulante dado de baja'
+    ]);
+
+}
+
+public function eliminarDefinitivo($id)
+{
     $applicant = DB::table('applicants')
         ->where('id', $id)
         ->first();
+
+    if (!$applicant) {
+        return response()->json([
+            'mensaje' => 'Postulante no encontrado'
+        ], 404);
+    }
+
+    if ($applicant->status !== 'baja') {
+        return response()->json([
+            'mensaje' => 'Solo se pueden eliminar definitivamente postulantes con status baja'
+        ], 422);
+    }
 
     if ($applicant) {
         foreach ([$applicant->cv_path, $applicant->carta_path] as $path) {
@@ -255,7 +282,7 @@ public function destroy($id)
         ->delete();
 
     return response()->json([
-        'mensaje' => 'Eliminado'
+        'mensaje' => 'Eliminado definitivamente'
     ]);
 
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Usuario;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class UsuarioController extends Controller
@@ -63,6 +64,52 @@ class UsuarioController extends Controller
         return response()->json([
             'message' => 'Sesion iniciada',
             'usuario' => $usuario,
+        ]);
+    }
+
+    public function estadoPostulacion(Request $request)
+    {
+        $request->validate([
+            'correo' => 'required_without:curp|nullable|email',
+            'curp' => 'required_without:correo|nullable|string',
+        ]);
+
+        $postulaciones = DB::table('applicants')
+            ->leftJoin(
+                'job_applications',
+                'applicants.id',
+                '=',
+                'job_applications.applicant_id'
+            )
+            ->where(function ($query) use ($request) {
+                if ($request->correo) {
+                    $query->orWhere('applicants.email', $request->correo);
+                }
+
+                if ($request->curp) {
+                    $query->orWhere('applicants.curp', $request->curp);
+                }
+            })
+            ->select(
+                'applicants.id',
+                'applicants.status',
+                'job_applications.puesto_aplicado'
+            )
+            ->orderBy('applicants.updated_at', 'desc')
+            ->get();
+
+        $segundoFiltro = $postulaciones
+            ->first(function ($postulacion) {
+                return in_array(
+                    $postulacion->status,
+                    ['aceptado', 'prefiltro'],
+                    true
+                );
+            });
+
+        return response()->json([
+            'segundo_filtro' => $segundoFiltro !== null,
+            'postulacion' => $segundoFiltro,
         ]);
     }
 

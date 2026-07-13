@@ -91,6 +91,18 @@
     font-family: Arial, sans-serif;
 }
 
+.status-notification {
+    background: #eef5fb;
+    border: 1px solid #0F2A44;
+    border-left: 6px solid #FF6B00;
+    border-radius: 8px;
+    color: #0F2A44;
+    font-weight: 700;
+    line-height: 1.45;
+    margin: 0 0 24px;
+    padding: 14px 16px;
+}
+
 .vacante {
     margin-top: 20px;
     padding: 15px;

@@ -12,6 +12,8 @@ class Applicants extends Model
 
         'nombre',
         'apellido',
+        'apellido_paterno',
+        'apellido_materno',
         'curp',
         'email',
         'telefono',

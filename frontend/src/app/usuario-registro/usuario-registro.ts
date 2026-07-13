@@ -44,7 +44,8 @@ export class UsuarioRegistro {
 
     this.datosFormulario = datos;
     this.nombre = datos.nombre || '';
-    this.apellido = datos.apellido || '';
+    this.apellido = datos.apellido
+      || `${datos.apellido_paterno || ''} ${datos.apellido_materno || ''}`.trim();
     this.correo = datos.email || '';
     this.telefono = datos.telefono || '';
     this.curp = datos.curp || '';

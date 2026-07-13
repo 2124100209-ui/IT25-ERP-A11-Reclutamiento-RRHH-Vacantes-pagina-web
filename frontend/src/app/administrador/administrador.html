@@ -64,8 +64,10 @@
         <th class="b">fecha_nacimiento</th>
         <th class="b">estado_civil</th>
         <th class="b">credito_infonavit</th>
+        <th class="b">status</th>
         <th class="b">created_at</th>
         <th class="b">updated_at</th>
+        <th class="b">eliminar baja</th>
     </tr>
   </thead>
   <tbody>
@@ -92,9 +94,21 @@
 
     <td class="d">{{ participante.credito_infonavit ? 'Si' : 'No' }}</td>
 
+    <td class="d">{{ participante.status }}</td>
+
     <td class="d">{{ participante.created_at }}</td>
 
     <td class="d">{{ participante.updated_at }}</td>
+
+    <td class="d">
+      <button
+        class="btn-b"
+        type="button"
+        *ngIf="participante.status === 'baja'"
+        (click)="eliminarPostulanteBaja(participante.id)">
+        Eliminar
+      </button>
+    </td>
 
     <!--<td>
       <button class="btn-a" (click)="editar(participante)">

@@ -43,9 +43,11 @@ export class Formulario {
   informacion: any[] = [];
   erroresFormulario: string[] = [];
   formSubmitted = false;
+  mostrarAvisoArchivos = false;
 
   nombre = '';
-  apellido = '';
+  apellidoPaterno = '';
+  apellidoMaterno = '';
   email = '';
   telefono = '';
   curp = '';
@@ -78,6 +80,7 @@ export class Formulario {
 
   cv: File | null = null;
   carta: File | null = null;
+  vacanteId: number | null = null;
 
   cursos: string[] = [''];
   idiomas: string[] = [''];
@@ -142,10 +145,14 @@ export class Formulario {
 
     if (usuario.datos_formulario) {
       this.aplicarDatosFormulario(usuario.datos_formulario);
+      this.mostrarAvisoArchivos = true;
     }
 
     this.nombre = usuario.nombre || '';
-    this.apellido = usuario.apellido || '';
+    const apellidos = this.separarApellidos(usuario.apellido || '');
+
+    this.apellidoPaterno = this.apellidoPaterno || apellidos.paterno;
+    this.apellidoMaterno = this.apellidoMaterno || apellidos.materno;
     this.email = usuario.correo || '';
     this.telefono = usuario.telefono || '';
     this.curp = usuario.curp || '';
@@ -154,8 +161,17 @@ export class Formulario {
   }
 
   aplicarDatosFormulario(datos: any) {
+    const apellidos = this.separarApellidos(datos.apellido || '');
+
     this.nombre = datos.nombre || this.nombre;
-    this.apellido = datos.apellido || this.apellido;
+    this.apellidoPaterno = datos.apellido_paterno
+      || datos.apellidoPaterno
+      || apellidos.paterno
+      || this.apellidoPaterno;
+    this.apellidoMaterno = datos.apellido_materno
+      || datos.apellidoMaterno
+      || apellidos.materno
+      || this.apellidoMaterno;
     this.email = datos.email || this.email;
     this.telefono = datos.telefono || this.telefono;
     this.curp = datos.curp || this.curp;
@@ -249,6 +265,8 @@ export class Formulario {
 
     if (!vacanteId) return;
 
+    this.vacanteId = vacanteId;
+
     this.usuariosService
       .obtenerVacante(vacanteId)
       .subscribe((vacante: any) => {
@@ -275,7 +293,14 @@ export class Formulario {
     cartaFiles?: FileList | null
   ) {
     this.formSubmitted = true;
-    this.erroresFormulario = this.obtenerErroresFormulario(formulario);
+    const cvSeleccionado = cvFiles?.[0] ?? this.cv;
+    const cartaSeleccionada = cartaFiles?.[0] ?? this.carta;
+
+    this.erroresFormulario = this.obtenerErroresFormulario(
+      formulario,
+      cvSeleccionado,
+      cartaSeleccionada
+    );
 
     if (this.erroresFormulario.length > 0) {
       setTimeout(() => {
@@ -309,19 +334,24 @@ export class Formulario {
       }
     }
 
-    const cvSeleccionado = cvFiles?.[0] ?? this.cv;
-    const cartaSeleccionada = cartaFiles?.[0] ?? this.carta;
-
     const applicants = new FormData();
 
     applicants.append('nombre', this.nombre);
-    applicants.append('apellido', this.apellido);
+    applicants.append('apellido_paterno', this.apellidoPaterno);
+    applicants.append('apellido_materno', this.apellidoMaterno);
     applicants.append('curp', this.curp);
     applicants.append('email', this.email);
     applicants.append('telefono', this.telefono);
     applicants.append('direccion', this.direccion);
     applicants.append('fecha_nacimiento', this.fecha_nacimiento);
     applicants.append('estado_civil', this.estado_civil);
+    applicants.append('puesto_aplicado', this.puesto_aplicado);
+    applicants.append('area', this.area);
+
+    if (this.vacanteId) {
+      applicants.append('vacancy_id', String(this.vacanteId));
+    }
+
     applicants.append(
       'credito_infonavit',
       this.credito_infonavit ? '1' : '0'
@@ -359,6 +389,7 @@ export class Formulario {
 
           const jobApplication = {
             applicant_id: applicantId,
+            vacancy_id: this.vacanteId,
             puesto_aplicado: this.puesto_aplicado,
             area: this.area,
             sueldo_percibido: this.sueldo_percibido
@@ -456,12 +487,17 @@ export class Formulario {
     return [];
   }
 
-  obtenerErroresFormulario(formulario?: any) {
+  obtenerErroresFormulario(
+    formulario?: any,
+    cvSeleccionado?: File | null,
+    cartaSeleccionada?: File | null
+  ) {
     const errores: string[] = [];
 
     const requeridos = [
       { valor: this.nombre, campo: 'Nombre(s)', seccion: 'Datos Personales' },
-      { valor: this.apellido, campo: 'Apellidos', seccion: 'Datos Personales' },
+      { valor: this.apellidoPaterno, campo: 'Apellido paterno', seccion: 'Datos Personales' },
+      { valor: this.apellidoMaterno, campo: 'Apellido materno', seccion: 'Datos Personales' },
       { valor: this.telefono, campo: 'Telefono', seccion: 'Datos Personales' },
       { valor: this.email, campo: 'Correo electronico', seccion: 'Datos Personales' },
       { valor: this.curp, campo: 'CURP', seccion: 'Datos Personales' },
@@ -494,6 +530,14 @@ export class Formulario {
       errores.push('Informacion Adicional: especifica el tipo de discapacidad.');
     }
 
+    if (!cvSeleccionado) {
+      errores.push('Curriculum Vitae: debes adjuntar tu CV.');
+    }
+
+    if (!cartaSeleccionada) {
+      errores.push('Curriculum Vitae: debes adjuntar tu carta de recomendacion.');
+    }
+
     return errores;
   }
 
@@ -508,7 +552,9 @@ export class Formulario {
   obtenerDatosFormulario() {
     return {
       nombre: this.nombre,
-      apellido: this.apellido,
+      apellido: this.apellidosCompletos(),
+      apellido_paterno: this.apellidoPaterno,
+      apellido_materno: this.apellidoMaterno,
       email: this.email,
       telefono: this.telefono,
       curp: this.curp,
@@ -543,6 +589,22 @@ export class Formulario {
 
   trackByIndex(index: number, item: any): number {
     return index;
+  }
+
+  apellidosCompletos() {
+    return `${this.apellidoPaterno} ${this.apellidoMaterno}`.trim();
+  }
+
+  separarApellidos(apellidos: string) {
+    const partes = apellidos
+      .trim()
+      .split(/\s+/)
+      .filter((parte) => parte.length > 0);
+
+    return {
+      paterno: partes[0] || '',
+      materno: partes.slice(1).join(' '),
+    };
   }
 
 }

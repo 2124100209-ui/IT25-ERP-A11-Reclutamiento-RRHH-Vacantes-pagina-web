@@ -186,4 +186,24 @@ export class Administrador {
       });
   }
 
+  eliminarPostulanteBaja(id: number) {
+    const confirmar = confirm(
+      'Eliminar definitivamente este postulante dado de baja?'
+    );
+
+    if (!confirmar) return;
+
+    this.http.delete(
+      `http://127.0.0.1:8000/api/seguimiento/${id}/definitivo`
+    ).subscribe({
+      next: () => {
+        alert('Postulante eliminado definitivamente.');
+        this.actualizarTablas();
+      },
+      error: () => {
+        alert('Solo se pueden eliminar postulantes con status baja.');
+      },
+    });
+  }
+
 }

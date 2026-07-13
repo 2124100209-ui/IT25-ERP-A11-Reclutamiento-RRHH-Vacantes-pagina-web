@@ -79,7 +79,7 @@ obtenerAceptados() {
   eliminarParticipante(id: number) {
 
     const confirmar = confirm(
-      '¿Eliminar postulante?'
+      'Dar de baja al postulante?'
     );
 
     if (!confirmar) return;
@@ -88,7 +88,7 @@ obtenerAceptados() {
       .eliminarParticipante(id)
       .subscribe(() => {
 
-        alert('Postulante eliminado');
+        alert('Postulante dado de baja');
 
         this.obtenerAceptados();
 

@@ -2,6 +2,10 @@
   <section class="register-box">
     <h2>Crear cuenta</h2>
 
+    <p class="notice" *ngIf="datosFormulario">
+      Al terminar volveras al formulario con tus datos cargados. Por seguridad del navegador, deberas adjuntar de nuevo tu CV y carta.
+    </p>
+
     <form #registroForm="ngForm">
       <label>
         Nombre(s)

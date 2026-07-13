@@ -23,6 +23,11 @@ Route::get(
     [ApplicantsController::class, 'index']
 )->middleware('admin.auth');
 
+Route::get(
+    '/applicants/{id}',
+    [ApplicantsController::class, 'show']
+)->middleware('admin.auth');
+
 // guardar formulario
 Route::post(
     '/applicants',
@@ -60,6 +65,11 @@ Route::put(
 Route::delete(
     '/seguimiento/{id}',
     [SeguimientoController::class, 'destroy']
+)->middleware('admin.auth');
+
+Route::delete(
+    '/seguimiento/{id}/definitivo',
+    [SeguimientoController::class, 'eliminarDefinitivo']
 )->middleware('admin.auth');
 
 use App\Http\Controllers\EducationsController;
@@ -189,4 +199,8 @@ Route::post(
 Route::post(
     '/usuario-login',
     [UsuarioController::class, 'login']
+);
+Route::post(
+    '/usuario/estado-postulacion',
+    [UsuarioController::class, 'estadoPostulacion']
 );

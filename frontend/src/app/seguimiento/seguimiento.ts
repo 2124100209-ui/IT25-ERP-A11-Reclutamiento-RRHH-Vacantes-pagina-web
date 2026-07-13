@@ -87,7 +87,7 @@ export class Seguimiento {
 
   eliminarParticipante(id: number) {
     const confirmar = confirm(
-      '¿Eliminar postulante?'
+      'Dar de baja al postulante?'
     );
 
     if (!confirmar) return;
@@ -95,7 +95,7 @@ export class Seguimiento {
     this.seguimientoService
       .eliminarParticipante(id)
       .subscribe(() => {
-        alert('Postulante eliminado');
+        alert('Postulante dado de baja');
 
         this.obtenerInformacion();
         this.obtenerHistorialBajas();

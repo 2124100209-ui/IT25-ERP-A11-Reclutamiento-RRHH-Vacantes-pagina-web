@@ -76,6 +76,16 @@
     margin: 0;
 }
 
+.notice {
+    background: #eef5fb;
+    border-left: 6px solid #0F2A44;
+    border-radius: 8px;
+    color: #0F2A44;
+    font-weight: 700;
+    margin: 0 0 18px;
+    padding: 12px 14px;
+}
+
 @media (max-width: 640px) {
     .register-box form {
         grid-template-columns: 1fr;
