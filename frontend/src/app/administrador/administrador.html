@@ -16,9 +16,16 @@
       [(ngModel)]="nuevoCorreo">
 
     <input
-      type="password"
+      [type]="mostrarPassword ? 'text' : 'password'"
       placeholder="Contrasena"
       [(ngModel)]="nuevaPassword">
+
+      <button
+    type="button"
+    class="btn-a"
+    (click)="mostrarPassword = !mostrarPassword">
+    {{ mostrarPassword ? 'Ocultar' : 'Mostrar' }}
+  </button>
 
     <button type="button" class="btn-a" (click)="crearAdmin()">
       Agregar admin
@@ -42,6 +49,16 @@
         <td class="d">{{ admin.id }}</td>
         <td class="d">{{ admin.correo }}</td>
         <td class="d">{{ admin.created_at }}</td>
+
+        <td class="d">
+        <button
+          type="button"
+          class="btn-a"
+          (click)="eliminarAdmin(admin.id)">
+          Eliminar
+        </button>
+      </td>
+
       </tr>
     </tbody>
   </table>
@@ -269,7 +286,7 @@
 
     <td class="d">{{ participante.trabaja_actualmente }}</td>
 
-    <td class="d">{{ participante.sueldo_actual }}</td>
+    <td class="d">{{ participante.sueldo_actual | moneyFormat }}</td>
 
     <td class="d">{{ participante.created_at }}</td>
 
@@ -444,7 +461,7 @@
 
     <td>{{ vacancy.requisitos }}</td>
 
-    <td>{{ vacancy.salario }}</td>
+    <td>{{ vacancy.salario | moneyFormat }}</td>
 
     <td>{{ vacancy.img }}</td>
 

@@ -254,6 +254,18 @@ input[type="text"]:focus {
     box-shadow: 0 0 5px rgba(52, 152, 219, 0.2);
 }
 
+.character-count {
+    color: #667085;
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-align: right;
+}
+
+.character-count.limit-exceeded {
+    color: #c0392b;
+    font-weight: 700;
+}
+
 .wide-field {
     grid-column: 1 / -1;
 }
@@ -290,11 +302,34 @@ input[type="text"]:focus {
     justify-self: start;
 }
 
-.requirements-preview {
-    margin: 0;
-    padding-left: 18px;
+.text-preview-cell {
+    min-width: 220px;
+    max-width: 340px;
+    vertical-align: top;
 }
 
-.requirements-preview li {
-    margin-bottom: 4px;
+.text-preview {
+    margin: 0 0 8px;
+    color: #344054;
+    line-height: 1.45;
+    white-space: pre-line;
+    word-break: break-word;
+}
+
+.requirements-text {
+    padding-left: 0;
+}
+
+.btn-link {
+    border: none;
+    background: transparent;
+    color: #FF6B00;
+    cursor: pointer;
+    font-weight: 700;
+    padding: 0;
+    text-decoration: underline;
+}
+
+.btn-link:hover {
+    color: #0F2A44;
 }

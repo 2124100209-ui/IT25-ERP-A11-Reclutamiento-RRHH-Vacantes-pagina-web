@@ -2,13 +2,17 @@ import { afterNextRender, ChangeDetectorRef, Component, inject, signal } from '@
 import { RouterLink } from "@angular/router";
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
+import { forkJoin } from 'rxjs';
 
 import { UsuariosService } from '../services/usuarios';
 import { UserAccountService } from '../services/user-account';
+import { ApplicantsService } from '../services/applicants';
+import { JobApplicationsService } from '../services/job-applications';
+import { MoneyFormatPipe } from '../shared/money-format';
 
 @Component({
   selector: 'app-usuario',
-  imports: [RouterLink, CommonModule],
+  imports: [RouterLink, CommonModule, MoneyFormatPipe],
   templateUrl: './usuario.html',
   styleUrl: './usuario.css',
 })
@@ -20,6 +24,7 @@ export class Usuario {
   mostrarModal = false;
   mostrarNotificacionSegundoFiltro = false;
   mensajeSegundoFiltro = '';
+  vacantesNoAceptadas: Record<string, any> = {};
 
   vacanteSeleccionada: any = null;
 
@@ -49,10 +54,66 @@ export class Usuario {
   salario = '';
   img = '';
 
-  constructor(private UsuariosService: UsuariosService) {
+  constructor(
+    private UsuariosService: UsuariosService,
+    private applicantsService: ApplicantsService,
+    private jobApplicationsService: JobApplicationsService
+  ) {
     afterNextRender(() => {
+      this.cargarVacantesNoAceptadas();
       this.obtenerInformacion();
+      this.cargarVacantesDadasDeBaja();
       this.revisarSegundoFiltro();
+    });
+  }
+
+  cargarVacantesNoAceptadas() {
+    this.vacantesNoAceptadas =
+      this.userAccountService.obtenerVacantesNoAceptadas();
+  }
+
+  cargarVacantesDadasDeBaja() {
+    const usuario = this.userAccountService.obtenerUsuario();
+
+    if (!usuario) return;
+
+    forkJoin({
+      applicants: this.applicantsService.obtenerApplicants(),
+      postulaciones: this.jobApplicationsService.obtenerJobApplications(),
+    }).subscribe({
+      next: ({ applicants, postulaciones }: any) => {
+        const postulante = (applicants || []).find((applicant: any) => {
+          const mismoCorreo = applicant.email
+            && usuario.correo
+            && applicant.email === usuario.correo;
+          const mismaCurp = applicant.curp
+            && usuario.curp
+            && applicant.curp === usuario.curp;
+
+          return (mismoCorreo || mismaCurp)
+            && String(applicant.status || '').toLowerCase() === 'baja';
+        });
+
+        if (!postulante) return;
+
+        (postulaciones || [])
+          .filter((postulacion: any) =>
+            postulacion.applicant_id === postulante.id
+            && postulacion.vacancy_id
+          )
+          .forEach((postulacion: any) => {
+            const mensaje = `No se acepto tu solicitud en la vacante ${postulacion.puesto_aplicado || 'seleccionada'}.`;
+
+            this.userAccountService.guardarVacanteNoAceptada({
+              id: postulacion.vacancy_id,
+              puesto: postulacion.puesto_aplicado,
+              mensaje,
+            });
+          });
+
+        this.cargarVacantesNoAceptadas();
+        this.changeDetector.detectChanges();
+      },
     });
   }
 
@@ -98,6 +159,19 @@ export class Usuario {
           this.changeDetector.detectChanges();
         },
       });
+  }
+
+  obtenerMensajeNoAceptada(vacante: any) {
+    const registro = this.vacantesNoAceptadas[String(vacante?.id)];
+
+    if (!registro) return '';
+
+    return registro.mensaje
+      || `No se acepto tu solicitud en la vacante ${vacante?.puesto}.`;
+  }
+
+  vacanteNoAceptada(vacante: any) {
+    return Boolean(this.obtenerMensajeNoAceptada(vacante));
   }
 
 }

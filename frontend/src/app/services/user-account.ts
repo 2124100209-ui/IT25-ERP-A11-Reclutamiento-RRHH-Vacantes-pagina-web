@@ -7,9 +7,10 @@ import { tap } from 'rxjs';
 })
 export class UserAccountService {
 
-  private readonly api = 'https://api-vacantes.i-deb.com.mx/api';
+  private readonly api = 'http://localhost:8000/api';
   private readonly storageKey = 'user_session';
   private readonly pendingFormKey = 'pending_user_form_data';
+  private readonly rejectedVacanciesKey = 'rejected_user_vacancies';
 
   constructor(private http: HttpClient) {}
 
@@ -86,6 +87,91 @@ export class UserAccountService {
     if (typeof window !== 'undefined') {
       localStorage.removeItem(this.pendingFormKey);
     }
+  }
+
+  guardarVacanteNoAceptada(vacante: any) {
+    if (typeof window === 'undefined' || !vacante?.id) {
+      return;
+    }
+
+    const usuarioKey = this.obtenerClaveUsuario();
+
+    if (!usuarioKey) {
+      return;
+    }
+
+    const vacantesPorUsuario = this.obtenerVacantesNoAceptadasGuardadas();
+    const vacantes = vacantesPorUsuario[usuarioKey] || {};
+
+    vacantes[String(vacante.id)] = {
+      id: vacante.id,
+      puesto: vacante.puesto || 'esta vacante',
+      mensaje: vacante.mensaje
+        || `No se acepto tu solicitud en la vacante ${vacante.puesto || ''}.`,
+    };
+
+    vacantesPorUsuario[usuarioKey] = vacantes;
+
+    localStorage.setItem(
+      this.rejectedVacanciesKey,
+      JSON.stringify(vacantesPorUsuario)
+    );
+  }
+
+  obtenerVacantesNoAceptadas() {
+    if (typeof window === 'undefined') {
+      return {};
+    }
+
+    const usuarioKey = this.obtenerClaveUsuario();
+
+    if (!usuarioKey) {
+      return {};
+    }
+
+    const vacantesPorUsuario = this.obtenerVacantesNoAceptadasGuardadas();
+
+    return vacantesPorUsuario[usuarioKey] || {};
+  }
+
+  obtenerVacanteNoAceptada(vacanteId: any) {
+    if (!vacanteId) {
+      return null;
+    }
+
+    const vacantes = this.obtenerVacantesNoAceptadas();
+
+    return vacantes[String(vacanteId)] || null;
+  }
+
+  private obtenerVacantesNoAceptadasGuardadas() {
+    const vacantes = localStorage.getItem(this.rejectedVacanciesKey);
+
+    if (!vacantes) {
+      return {};
+    }
+
+    try {
+      return JSON.parse(vacantes);
+    } catch {
+      return {};
+    }
+  }
+
+  private obtenerClaveUsuario() {
+    const usuario = this.obtenerUsuario();
+    const correo = String(usuario?.correo || '').trim().toLowerCase();
+    const curp = String(usuario?.curp || '').trim().toUpperCase();
+
+    if (correo) {
+      return `correo:${correo}`;
+    }
+
+    if (curp) {
+      return `curp:${curp}`;
+    }
+
+    return '';
   }
 
   private guardarSesion(usuario: any) {

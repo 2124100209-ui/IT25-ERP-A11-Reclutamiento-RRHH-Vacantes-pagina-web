@@ -142,6 +142,11 @@ Route::post(
     [AdminAuthController::class, 'store']
 )->middleware('admin.auth');
 
+Route::delete(
+    '/admin-users/{id}',
+    [AdminAuthController::class, 'destroy']
+)->middleware('admin.auth');
+
 Route::get(
     '/administrador',
     [AdministradorController::class, 'index']

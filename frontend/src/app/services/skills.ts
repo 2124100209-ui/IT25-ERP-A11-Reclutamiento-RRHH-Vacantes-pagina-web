@@ -6,7 +6,7 @@ import { Injectable } from '@angular/core';
 })
 export class SkillsService {
 
-  api = 'https://api-vacantes.i-deb.com.mx/api/skills';
+  api = 'http://localhost:8000/api/skills';
 
   constructor(private http: HttpClient) {}
 

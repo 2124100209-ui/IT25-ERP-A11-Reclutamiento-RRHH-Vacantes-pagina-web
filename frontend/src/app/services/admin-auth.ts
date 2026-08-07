@@ -8,7 +8,7 @@ import { tap } from 'rxjs';
 })
 export class AdminAuthService {
 
-  private readonly api = 'https://api-vacantes.i-deb.com.mx/api';
+  private readonly api = 'http://localhost:8000/api';
   private readonly storageKey = 'admin_session';
   private readonly tokenKey = 'admin_token';
 
@@ -40,6 +40,10 @@ export class AdminAuthService {
       password,
     });
   }
+
+  eliminarAdmin(id: number) {
+  return this.http.delete(`${this.api}/admin-users/${id}`);
+}
 
   estaAutenticado() {
     return this.obtenerAdmin() !== null && this.obtenerToken() !== null;

@@ -30,6 +30,11 @@
                 <div class="card-info">
                     <h3 class="job-name"> {{ vacante.puesto }} </h3>
                     <p class="description"> {{ vacante.descripcion_breve }} </p>
+                    <p
+                        class="vacancy-warning"
+                        *ngIf="vacanteNoAceptada(vacante)">
+                        {{ obtenerMensajeNoAceptada(vacante) }}
+                    </p>
                     <button class="btn-form" (click)="abrirModal(vacante)">
                     Mas info
                 </button>
@@ -58,7 +63,7 @@
       </div>
       <div>
         <span>Salario</span>
-        <strong>{{ vacanteSeleccionada?.salario }}</strong>
+        <strong>{{ vacanteSeleccionada?.salario | moneyFormat }}</strong>
       </div>
     </div>
 
@@ -74,10 +79,16 @@
     <button class="btn-none" (click)="cerrarModal()"> Cerrar </button>
     <button
       class="btn-form"
+      *ngIf="!vacanteNoAceptada(vacanteSeleccionada)"
       [routerLink]="['/form']"
       [queryParams]="{ vacanteId: vacanteSeleccionada?.id }">
       Postularse
     </button>
+    <div
+      class="vacancy-warning modal-warning"
+      *ngIf="vacanteNoAceptada(vacanteSeleccionada)">
+      {{ obtenerMensajeNoAceptada(vacanteSeleccionada) }}
+    </div>
 
 
   </div>

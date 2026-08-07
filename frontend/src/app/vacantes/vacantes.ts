@@ -3,17 +3,22 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 import { VacancyService } from '../services/vacancy';
+import { formatMoney, formatMoneyInput, MoneyFormatPipe } from '../shared/money-format';
 
 
 @Component({
   selector: 'app-vacantes',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, MoneyFormatPipe],
   templateUrl: './vacantes.html',
   styleUrl: './vacantes.css',
 })
 export class Vacantes {
 
   mostrarModal = false;
+  readonly limiteDescripcionBreve = 255;
+  readonly limiteTextoTabla = 180;
+  camposExpandidos = new Set<string>();
+  private alertaDescripcionBreveMostrada = false;
 
   abrirModal() {
     this.mostrarModal = true;
@@ -70,13 +75,22 @@ constructor() {
   }
 
 
-seleccionarImagen(event: Event) {
+  seleccionarImagen(event: Event) {
   const input = event.target as HTMLInputElement;
 
   this.imagen = input.files?.[0] ?? null;
 }
 
+formatearSalario(valor: string) {
+  this.salario = formatMoneyInput(valor);
+}
+
 guardarVacante(imagenInput?: HTMLInputElement) {
+  if (this.descripcion_breve.length > this.limiteDescripcionBreve) {
+    alert(`La descripcion breve no puede superar los ${this.limiteDescripcionBreve} caracteres permitidos.`);
+    return;
+  }
+
   const imagenSeleccionada =
     imagenInput?.files?.[0] ?? this.imagen;
 
@@ -163,7 +177,7 @@ eliminarVacante(id: number) {
   this.descripcion = vacante.descripcion;
   this.horario = vacante.horario;
   this.requisitos = this.separarRequisitos(vacante.requisitos);
-  this.salario = vacante.salario;
+  this.salario = formatMoney(vacante.salario);
   this.img = vacante.img;
   this.imagen = null;
 
@@ -200,6 +214,20 @@ cambiarEstado(id: number) {
 
 }
 
+validarDescripcionBreve(valor: string) {
+  this.descripcion_breve = valor;
+
+  if (valor.length > this.limiteDescripcionBreve) {
+    if (!this.alertaDescripcionBreveMostrada) {
+      alert(`Has pasado de los ${this.limiteDescripcionBreve} caracteres permitidos en la descripcion breve.`);
+      this.alertaDescripcionBreveMostrada = true;
+    }
+    return;
+  }
+
+  this.alertaDescripcionBreveMostrada = false;
+}
+
 agregarRequisito() {
   this.requisitos.push('');
 }
@@ -230,6 +258,46 @@ separarRequisitos(requisitos: string) {
     .filter((requisito) => requisito.length > 0);
 
   return separados.length ? separados : [''];
+}
+
+textoRequisitos(requisitos: string) {
+  return this.separarRequisitos(requisitos).join('\n');
+}
+
+claveCampo(vacante: any, campo: string) {
+  return `${vacante.id}-${campo}`;
+}
+
+campoExpandido(vacante: any, campo: string) {
+  return this.camposExpandidos.has(this.claveCampo(vacante, campo));
+}
+
+alternarCampo(vacante: any, campo: string) {
+  const clave = this.claveCampo(vacante, campo);
+
+  if (this.camposExpandidos.has(clave)) {
+    this.camposExpandidos.delete(clave);
+    return;
+  }
+
+  this.camposExpandidos.add(clave);
+}
+
+necesitaExpandir(texto: string) {
+  return (texto || '').length > this.limiteTextoTabla;
+}
+
+textoVisible(texto: string, vacante: any, campo: string) {
+  const textoSeguro = texto || '';
+
+  if (
+    this.campoExpandido(vacante, campo) ||
+    !this.necesitaExpandir(textoSeguro)
+  ) {
+    return textoSeguro;
+  }
+
+  return `${textoSeguro.slice(0, this.limiteTextoTabla).trim()}...`;
 }
 
 }

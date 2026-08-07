@@ -57,4 +57,27 @@ class AdminAuthController extends Controller
 
         return response()->json($admin, 201);
     }
+
+    public function destroy(Request $request, $id)
+    {
+        $admin = Admin::findOrFail($id);
+
+        if ($admin->session_token === $request->header('X-Admin-Token')) {
+            return response()->json([
+                'message' => 'No puedes eliminar la cuenta con la sesion activa',
+            ], 422);
+        }
+
+        if (Admin::count() <= 1) {
+            return response()->json([
+                'message' => 'Debe existir al menos una cuenta de administrador',
+            ], 422);
+        }
+
+        $admin->delete();
+
+        return response()->json([
+            'message' => 'Administrador eliminado',
+        ]);
+    }
 }

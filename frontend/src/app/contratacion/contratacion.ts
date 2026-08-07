@@ -80,7 +80,7 @@ export class Contratacion {
     if (!this.applicantId) return;
 
     this.http.get<any>(
-      `https://api-vacantes.i-deb.com.mx/api/applicants/${this.applicantId}`
+      `http://localhost:8000/api/applicants/${this.applicantId}`
     ).subscribe((postulante) => {
       const apellidos = this.separarApellidos(
         postulante.apellido || ''

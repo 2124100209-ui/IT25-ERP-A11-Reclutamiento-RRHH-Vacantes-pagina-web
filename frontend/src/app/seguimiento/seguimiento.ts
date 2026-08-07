@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 
 import { SeguimientoService }
 from '../services/seguimiento';
+import { MoneyFormatPipe } from '../shared/money-format';
 
 @Component({
   selector: 'app-seguimiento',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, MoneyFormatPipe],
   templateUrl: './seguimiento.html',
   styleUrl: './seguimiento.css',
 })

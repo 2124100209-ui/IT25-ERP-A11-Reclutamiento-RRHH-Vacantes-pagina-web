@@ -21,7 +21,12 @@
 
   <label>
     Salario
-    <input type="text" placeholder="Ingrese el salario..." [(ngModel)]="salario">
+    <input
+      type="text"
+      inputmode="decimal"
+      placeholder="Ingrese el salario..."
+      [ngModel]="salario"
+      (ngModelChange)="formatearSalario($event)">
   </label>
 
   <label>
@@ -40,9 +45,16 @@
     Descripcion breve
     <textarea
       rows="4"
+      [attr.maxlength]="limiteDescripcionBreve + 1"
       placeholder="Ingrese la descripcion breve..."
-      [(ngModel)]="descripcion_breve">
+      [ngModel]="descripcion_breve"
+      (ngModelChange)="validarDescripcionBreve($event)">
     </textarea>
+    <small
+      class="character-count"
+      [class.limit-exceeded]="descripcion_breve.length > limiteDescripcionBreve">
+      {{ descripcion_breve.length }} / {{ limiteDescripcionBreve }} caracteres
+    </small>
   </label>
 
   <label class="wide-field">
@@ -117,19 +129,35 @@
 
         <td>{{ vacante.descripcion_breve }}</td>
 
-        <td>{{ vacante.descripcion }}</td>
+        <td class="text-preview-cell">
+          <p class="text-preview">
+            {{ textoVisible(vacante.descripcion, vacante, 'descripcion') }}
+          </p>
+          <button
+            *ngIf="necesitaExpandir(vacante.descripcion)"
+            class="btn-link"
+            type="button"
+            (click)="alternarCampo(vacante, 'descripcion')">
+            {{ campoExpandido(vacante, 'descripcion') ? 'Ver menos' : 'Ver mas' }}
+          </button>
+        </td>
 
         <td>{{ vacante.horario }}</td>
 
-        <td>
-          <ul class="requirements-preview">
-            <li *ngFor="let requisito of separarRequisitos(vacante.requisitos)">
-              {{ requisito }}
-            </li>
-          </ul>
+        <td class="text-preview-cell">
+          <p class="text-preview requirements-text">
+            {{ textoVisible(textoRequisitos(vacante.requisitos), vacante, 'requisitos') }}
+          </p>
+          <button
+            *ngIf="necesitaExpandir(textoRequisitos(vacante.requisitos))"
+            class="btn-link"
+            type="button"
+            (click)="alternarCampo(vacante, 'requisitos')">
+            {{ campoExpandido(vacante, 'requisitos') ? 'Ver menos' : 'Ver mas' }}
+          </button>
         </td>
 
-        <td>{{ vacante.salario }}</td>
+        <td>{{ vacante.salario | moneyFormat }}</td>
 
         <td>
           <img

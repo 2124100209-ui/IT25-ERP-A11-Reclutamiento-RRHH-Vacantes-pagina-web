@@ -4,11 +4,12 @@ import { Router } from '@angular/router';
 
 import { SeguimientoService }
 from '../services/seguimiento';
+import { MoneyFormatPipe } from '../shared/money-format';
 
 @Component({
   selector: 'app-seguimiento-acept',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, MoneyFormatPipe],
   templateUrl: './seguimiento-acept.html',
   styleUrl: './seguimiento-acept.css',
 })

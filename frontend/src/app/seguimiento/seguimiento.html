@@ -173,13 +173,13 @@
         <li>(Puesto solicitado)</li>
         <li>Puesto: {{ participanteSeleccionado?.puesto_aplicado }}</li>
         <li>Area: {{ participanteSeleccionado?.area }}</li>
-        <li>Sueldo percibido: {{ participanteSeleccionado?.sueldo_percibido }}</li>
+        <li>Sueldo percibido: {{ participanteSeleccionado?.sueldo_percibido | moneyFormat }}</li>
     </ul>
 
     <ul>
         <li>(Informacion profesional)</li>
         <li>Trabaja actualmente: {{ participanteSeleccionado?.trabaja_actualmente ? 'Si' : 'No' }}</li>
-        <li>Sueldo actual: {{ participanteSeleccionado?.sueldo_actual || 'No especificado' }}</li>
+        <li>Sueldo actual: {{ (participanteSeleccionado?.sueldo_actual | moneyFormat) || 'No especificado' }}</li>
         <li *ngIf="!participanteSeleccionado?.work_experiences?.length">
           Sin experiencias laborales registradas.
         </li>

@@ -11,11 +11,12 @@ from '@angular/common/http';
 
 import { AdminAuthService }
 from '../services/admin-auth';
+import { MoneyFormatPipe } from '../shared/money-format';
 
 @Component({
   selector: 'app-administrador',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, MoneyFormatPipe],
   templateUrl: './administrador.html',
   styleUrl: './administrador.css',
 })
@@ -41,7 +42,7 @@ export class Administrador {
   nuevaPassword = '';
   mensajeAdmin = '';
 
-  
+  mostrarPassword = false;
 
 
   private readonly http =
@@ -80,7 +81,7 @@ export class Administrador {
   obtenerApplicants() {
 
     this.http.get<any[]>(
-      'https://api-vacantes.i-deb.com.mx/api/applicants'
+      'http://localhost:8000/api/applicants'
     ).subscribe(data => {
 
       console.log(data);
@@ -95,7 +96,7 @@ export class Administrador {
   obtenerJobApplications() {
 
     this.http.get<any[]>(
-      'https://api-vacantes.i-deb.com.mx/api/job-applications'
+      'http://localhost:8000/api/job-applications'
     ).subscribe(data => {
 
       this.jobApplications = data;
@@ -108,7 +109,7 @@ export class Administrador {
   obtenerEducations() {
 
     this.http.get<any[]>(
-      'https://api-vacantes.i-deb.com.mx/api/educations'
+      'http://localhost:8000/api/educations'
     ).subscribe(data => {
 
       this.educations = data;
@@ -121,7 +122,7 @@ export class Administrador {
   obtenerWorkExperiences() {
 
     this.http.get<any[]>(
-      'https://api-vacantes.i-deb.com.mx/api/work-experiences'
+      'http://localhost:8000/api/work-experiences'
     ).subscribe(data => {
 
       this.workExperiences = data;
@@ -134,7 +135,7 @@ export class Administrador {
   obtenerSkills() {
 
     this.http.get<any[]>(
-      'https://api-vacantes.i-deb.com.mx/api/skills'
+      'http://localhost:8000/api/skills'
     ).subscribe(data => {
 
       this.skills = data;
@@ -147,7 +148,7 @@ export class Administrador {
   obtenerAdditionalInformation() {
 
     this.http.get<any[]>(
-      'https://api-vacantes.i-deb.com.mx/api/additional-information'
+      'http://localhost:8000/api/additional-information'
     ).subscribe(data => {
 
       this.additionalInformation = data;
@@ -186,6 +187,19 @@ export class Administrador {
       });
   }
 
+  eliminarAdmin(id: number) {
+  this.adminAuthService.eliminarAdmin(id).subscribe({
+    next: () => {
+      this.mensajeAdmin = 'Administrador eliminado correctamente.';
+      this.obtenerAdmins();
+    },
+    error: (error) => {
+      this.mensajeAdmin =
+        error.error?.message || 'No se pudo eliminar el administrador.';
+    }
+  });
+}
+
   eliminarPostulanteBaja(id: number) {
     const confirmar = confirm(
       'Eliminar definitivamente este postulante dado de baja?'
@@ -194,7 +208,7 @@ export class Administrador {
     if (!confirmar) return;
 
     this.http.delete(
-      `https://api-vacantes.i-deb.com.mx/api/seguimiento/${id}/definitivo`
+      `http://localhost:8000/api/seguimiento/${id}/definitivo`
     ).subscribe({
       next: () => {
         alert('Postulante eliminado definitivamente.');
