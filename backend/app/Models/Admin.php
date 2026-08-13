@@ -12,10 +12,15 @@ class Admin extends Model
         'correo',
         'password',
         'session_token',
+        'activo',
     ];
 
     protected $hidden = [
         'password',
         'session_token',
+    ];
+
+    protected $casts = [
+        'activo' => 'boolean',
     ];
 }

@@ -147,6 +147,16 @@ Route::delete(
     [AdminAuthController::class, 'destroy']
 )->middleware('admin.auth');
 
+Route::patch(
+    '/admin-users/{id}/toggle',
+    [AdminAuthController::class, 'toggleActivo']
+)->middleware('admin.auth');
+
+Route::put(
+    '/admin-users/{id}',
+    [AdminAuthController::class, 'update']
+)->middleware('admin.auth');
+
 Route::get(
     '/administrador',
     [AdministradorController::class, 'index']

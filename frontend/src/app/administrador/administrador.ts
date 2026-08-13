@@ -44,6 +44,9 @@ export class Administrador {
 
   mostrarPassword = false;
 
+  editandoAdmin = false;
+  adminEditandoId: number | null = null;
+
 
   private readonly http =
     inject(HttpClient);
@@ -81,7 +84,7 @@ export class Administrador {
   obtenerApplicants() {
 
     this.http.get<any[]>(
-      'http://localhost:8000/api/applicants'
+      'https://api-vacantes.i-deb.com.mx/api/applicants'
     ).subscribe(data => {
 
       console.log(data);
@@ -96,7 +99,7 @@ export class Administrador {
   obtenerJobApplications() {
 
     this.http.get<any[]>(
-      'http://localhost:8000/api/job-applications'
+      'https://api-vacantes.i-deb.com.mx/api/job-applications'
     ).subscribe(data => {
 
       this.jobApplications = data;
@@ -109,7 +112,7 @@ export class Administrador {
   obtenerEducations() {
 
     this.http.get<any[]>(
-      'http://localhost:8000/api/educations'
+      'https://api-vacantes.i-deb.com.mx/api/educations'
     ).subscribe(data => {
 
       this.educations = data;
@@ -122,7 +125,7 @@ export class Administrador {
   obtenerWorkExperiences() {
 
     this.http.get<any[]>(
-      'http://localhost:8000/api/work-experiences'
+      'https://api-vacantes.i-deb.com.mx/api/work-experiences'
     ).subscribe(data => {
 
       this.workExperiences = data;
@@ -135,7 +138,7 @@ export class Administrador {
   obtenerSkills() {
 
     this.http.get<any[]>(
-      'http://localhost:8000/api/skills'
+      'https://api-vacantes.i-deb.com.mx/api/skills'
     ).subscribe(data => {
 
       this.skills = data;
@@ -148,7 +151,7 @@ export class Administrador {
   obtenerAdditionalInformation() {
 
     this.http.get<any[]>(
-      'http://localhost:8000/api/additional-information'
+      'https://api-vacantes.i-deb.com.mx/api/additional-information'
     ).subscribe(data => {
 
       this.additionalInformation = data;
@@ -170,22 +173,54 @@ export class Administrador {
   }
 
   crearAdmin() {
-    this.mensajeAdmin = '';
+  this.mensajeAdmin = '';
+
+  // MODO EDITAR
+  if (this.editandoAdmin && this.adminEditandoId !== null) {
 
     this.adminAuthService
-      .crearAdmin(this.nuevoCorreo, this.nuevaPassword)
+      .editarAdmin(
+        this.adminEditandoId,
+        this.nuevoCorreo,
+        this.nuevaPassword
+      )
       .subscribe({
-        next: () => {
-          this.mensajeAdmin = 'Administrador agregado correctamente.';
-          this.nuevoCorreo = '';
-          this.nuevaPassword = '';
+        next: (respuesta: any) => {
+          this.mensajeAdmin = respuesta.message;
+
+          this.cancelarEdicion();
           this.obtenerAdmins();
         },
-        error: () => {
-          this.mensajeAdmin = 'No se pudo agregar. Revisa el correo y la contrasena.';
-        },
+
+        error: (error) => {
+          this.mensajeAdmin =
+            error.error?.message ||
+            'No se pudo actualizar el administrador.';
+        }
       });
+
+    return;
   }
+
+  // MODO CREAR
+  this.adminAuthService
+    .crearAdmin(this.nuevoCorreo, this.nuevaPassword)
+    .subscribe({
+      next: () => {
+        this.mensajeAdmin = 'Administrador agregado correctamente.';
+
+        this.nuevoCorreo = '';
+        this.nuevaPassword = '';
+
+        this.obtenerAdmins();
+      },
+
+      error: () => {
+        this.mensajeAdmin =
+          'No se pudo agregar. Revisa el correo y la contrasena.';
+      },
+    });
+}
 
   eliminarAdmin(id: number) {
   this.adminAuthService.eliminarAdmin(id).subscribe({
@@ -208,7 +243,7 @@ export class Administrador {
     if (!confirmar) return;
 
     this.http.delete(
-      `http://localhost:8000/api/seguimiento/${id}/definitivo`
+      `https://api-vacantes.i-deb.com.mx/api/seguimiento/${id}/definitivo`
     ).subscribe({
       next: () => {
         alert('Postulante eliminado definitivamente.');
@@ -220,4 +255,44 @@ export class Administrador {
     });
   }
 
+  
+  toggleActivoAdmin(id: number) {
+  this.mensajeAdmin = '';
+
+  this.adminAuthService.toggleActivoAdmin(id).subscribe({
+    next: (respuesta: any) => {
+      this.mensajeAdmin = respuesta.message;
+      this.obtenerAdmins();
+    },
+    error: (error) => {
+      this.mensajeAdmin =
+        error.error?.message ||
+        'No se pudo cambiar el estado del administrador.';
+    }
+  });
+}
+
+
+editarAdmin(admin: any) {
+  this.editandoAdmin = true;
+  this.adminEditandoId = admin.id;
+
+  this.nuevoCorreo = admin.correo;
+  this.nuevaPassword = '';
+
+  this.mostrarPassword = false;
+
+  this.mensajeAdmin = 'Editando administrador...';
+}
+
+cancelarEdicion() {
+  this.editandoAdmin = false;
+  this.adminEditandoId = null;
+
+  this.nuevoCorreo = '';
+  this.nuevaPassword = '';
+
+  this.mostrarPassword = false;
+  this.mensajeAdmin = '';
+}
 }

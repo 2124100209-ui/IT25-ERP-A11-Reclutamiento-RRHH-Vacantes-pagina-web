@@ -7,7 +7,9 @@
 </button>
 
 <div class="admin-card">
-  <h3>Agregar administrador</h3>
+  <h3>
+  {{ editandoAdmin ? 'Editar administrador' : 'Agregar administrador' }}
+</h3>
 
   <div class="admin-form">
     <input
@@ -28,40 +30,76 @@
   </button>
 
     <button type="button" class="btn-a" (click)="crearAdmin()">
-      Agregar admin
-    </button>
+  {{ editandoAdmin ? 'Guardar cambios' : 'Agregar admin' }}
+</button>
+<button
+  *ngIf="editandoAdmin"
+  type="button"
+  class="btn-a"
+  (click)="cancelarEdicion()">
+  Cancelar
+</button>
+
   </div>
 
   <p *ngIf="mensajeAdmin" class="admin-message">
     {{ mensajeAdmin }}
   </p>
 
+
+
   <table>
-    <thead class="table_top">
-      <tr>
-        <th class="b">id</th>
-        <th class="b">correo</th>
-        <th class="b">created_at</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let admin of admins">
-        <td class="d">{{ admin.id }}</td>
-        <td class="d">{{ admin.correo }}</td>
-        <td class="d">{{ admin.created_at }}</td>
+  <thead class="table_top">
+    <tr>
+      <th class="b">ID</th>
+      <th class="b">Correo</th>
+      <th class="b">Fecha de creación</th>
+      <th class="b">Estado</th>
+      <th class="b">Acciones</th>
+    </tr>
+  </thead>
 
-        <td class="d">
-        <button
-          type="button"
-          class="btn-a"
-          (click)="eliminarAdmin(admin.id)">
-          Eliminar
-        </button>
-      </td>
+  <tbody>
+  <tr *ngFor="let admin of admins">
+    <td class="d">{{ admin.id }}</td>
+    <td class="d">{{ admin.correo }}</td>
+    <td class="d">{{ admin.created_at }}</td>
 
-      </tr>
-    </tbody>
-  </table>
+    <!-- Estado -->
+    <td class="d">
+      {{ admin.activo ? 'Activa' : 'Desactivada' }}
+    </td>
+
+    <!-- Todas las acciones en una sola columna -->
+    <td class="d acciones">
+
+      <button
+        type="button"
+        class="btn-a"
+        (click)="editarAdmin(admin)">
+        Editar
+      </button>
+
+      <button
+        type="button"
+        class="btn-a"
+        (click)="toggleActivoAdmin(admin.id)">
+        {{ admin.activo ? 'Desactivar' : 'Activar' }}
+      </button>
+
+      <button
+        type="button"
+        class="btn-a"
+        (click)="eliminarAdmin(admin.id)">
+        Eliminar
+      </button>
+
+    </td>
+  </tr>
+</tbody>
+</table>
+
+
 </div>
 
 <h3>DB de Usuarios</h3>

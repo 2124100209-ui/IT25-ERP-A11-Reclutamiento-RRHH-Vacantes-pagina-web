@@ -8,7 +8,7 @@ import { tap } from 'rxjs';
 })
 export class AdminAuthService {
 
-  private readonly api = 'http://localhost:8000/api';
+  private readonly api = 'https://api-vacantes.i-deb.com.mx/api';
   private readonly storageKey = 'admin_session';
   private readonly tokenKey = 'admin_token';
 
@@ -43,6 +43,10 @@ export class AdminAuthService {
 
   eliminarAdmin(id: number) {
   return this.http.delete(`${this.api}/admin-users/${id}`);
+}
+
+toggleActivoAdmin(id: number) {
+  return this.http.patch(`${this.api}/admin-users/${id}/toggle`, {});
 }
 
   estaAutenticado() {
@@ -82,4 +86,11 @@ export class AdminAuthService {
       localStorage.setItem(this.tokenKey, token);
     }
   }
+
+  editarAdmin(id: number, correo: string, password: string) {
+  return this.http.put(`${this.api}/admin-users/${id}`, {
+    correo,
+    password: password || null
+  });
+}
 }

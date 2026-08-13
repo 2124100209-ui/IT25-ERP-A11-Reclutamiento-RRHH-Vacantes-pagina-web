@@ -24,6 +24,12 @@ class AdminAuthController extends Controller
             ], 401);
         }
 
+        if (!$admin->activo) {
+            return response()->json([
+                'message' => 'Esta cuenta de administrador está desactivada.',
+            ], 403);
+        }
+
         $token = Str::random(60);
         $admin->update([
             'session_token' => $token,
@@ -58,6 +64,32 @@ class AdminAuthController extends Controller
         return response()->json($admin, 201);
     }
 
+
+    public function update(Request $request, $id)
+{
+    $admin = Admin::findOrFail($id);
+
+    $request->validate([
+        'correo' => 'required|email|unique:admins,correo,' . $id,
+        'password' => 'nullable|string|min:6',
+    ]);
+
+    $admin->correo = $request->correo;
+
+    // Solo cambia la contraseña si se escribió una nueva
+    if ($request->filled('password')) {
+        $admin->password = Hash::make($request->password);
+    }
+
+    $admin->save();
+
+    return response()->json([
+        'message' => 'Administrador actualizado correctamente.',
+        'admin' => $admin,
+    ]);
+}
+
+
     public function destroy(Request $request, $id)
     {
         $admin = Admin::findOrFail($id);
@@ -80,4 +112,27 @@ class AdminAuthController extends Controller
             'message' => 'Administrador eliminado',
         ]);
     }
+
+
+    public function toggleActivo(Request $request, $id)
+{
+    $admin = Admin::findOrFail($id);
+
+
+    if ($admin->session_token === $request->header('X-Admin-Token')) {
+        return response()->json([
+            'message' => 'No puedes desactivar la cuenta con la sesión activa.',
+        ], 422);
+    }
+
+    $admin->activo = !$admin->activo;
+    $admin->save();
+
+    return response()->json([
+        'message' => $admin->activo
+            ? 'Administrador activado correctamente.'
+            : 'Administrador desactivado correctamente.',
+        'activo' => $admin->activo,
+    ]);
+}
 }

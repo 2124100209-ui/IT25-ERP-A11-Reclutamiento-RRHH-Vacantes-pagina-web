@@ -7,7 +7,7 @@ import { tap } from 'rxjs';
 })
 export class UserAccountService {
 
-  private readonly api = 'http://localhost:8000/api';
+  private readonly api = 'https://api-vacantes.i-deb.com.mx/api';
   private readonly storageKey = 'user_session';
   private readonly pendingFormKey = 'pending_user_form_data';
   private readonly rejectedVacanciesKey = 'rejected_user_vacancies';
